@@ -10,4 +10,5 @@
 3. GIT - https://git-scm.com/book/ru/v2
 4. PostgreSQL не ниже 10 - https://info-comp.ru/sisadminst/684-install-postgresql-11-on-windows.html
 5. Postman - https://www.postman.com/downloads/
-6. SQLite Studio - https://sqlitestudio.pl/
+6. SQLite - https://www.tutorialspoint.com/sqlite/sqlite_installation.htm
+7. SQLite Studio - https://sqlitestudio.pl/
