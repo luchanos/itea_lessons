@@ -4,12 +4,12 @@
 # f_o_lst = [open("testfile.txt", "r") for _ in range(100_000)] # OSError: Too many open files: 'testfile.txt'
 # чтобы такого не было надо отлавливать потенциальные ошибки:
 
-try:
-    f_o = open("testfile.txt", "w")
-except Exception as err:
-    print(err)
-finally:
-    f_o.close()
+# try:
+#     f_o = open("testfile.txt", "w")
+# except Exception as err:
+#     print(err)
+# finally:
+#     f_o.close()
 
 # такой вариант не самый лучший для того, чтобы поддерживать удобство кода. Специально для таких случаев придумали
 # менеджеры контекста
@@ -17,36 +17,36 @@ finally:
 ##########################################################################
 ########################### Менеджер контекста ###########################
 ##########################################################################
-f_o = open("testfile.txt", "r")
-with f_o:
-    print("Это выполнение какого-то контекста")
+# f_o = open("testfile.txt", "r")
+# with f_o:
+#     print("Это выполнение какого-то контекста")
 
 # объект после with должен обладать методами __enter__ и __exit__. Давайте напишем кастомный класс и посмотрим,
 # как это работает
 
 
-class MyClassForContextMan:
-    def __enter__(self):
-        print(f"Вызывается метод __enter__ у экземпляра {self}")
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        print(f"Вызывается метод __exit__ у экземпляра {self}")
-        if exc_val:
-            print(f"И кстати тут произошла вот такая ошибка с вот такой информацией о ней: "
-                  f"{exc_type}, {exc_val}, {exc_tb}")
-
-
-ex_for_context = MyClassForContextMan()
-
-# штатная работа:
-with ex_for_context:
-    print(f"Выполнение контекста для {ex_for_context}")
-
-
-# а теперь посмотрим на работу при возникновении ошибки:
-with ex_for_context:
-    print(f"Выполнение контекста для {ex_for_context}")
-    # raise ValueError("Очень страшная ошибка!")
+# class MyClassForContextMan:
+#     def __enter__(self):
+#         print(f"Вызывается метод __enter__ у экземпляра {self}")
+#
+#     def __exit__(self, exc_type, exc_val, exc_tb):
+#         print(f"Вызывается метод __exit__ у экземпляра {self}")
+#         if exc_val:
+#             print(f"И кстати тут произошла вот такая ошибка с вот такой информацией о ней: "
+#                   f"{exc_type}, {exc_val}, {exc_tb}")
+#
+#
+# ex_for_context = MyClassForContextMan()
+#
+# # штатная работа:
+# with ex_for_context:
+#     print(f"Выполнение контекста для {ex_for_context}")
+#
+#
+# # а теперь посмотрим на работу при возникновении ошибки:
+# with ex_for_context:
+#     print(f"Выполнение контекста для {ex_for_context}")
+#     # raise ValueError("Очень страшная ошибка!")
 
 # менеджеры контекстов - ваш бро! Используйте их когда поключаетесь к БД, читаете или пишете в файлы и прочих прелестях,
 # где работа с ними предусмотрена.
@@ -55,16 +55,16 @@ with ex_for_context:
 ##########################################################################
 ################################ Docstrings ##############################
 ##########################################################################
-class DockedClass:
-    """Это просто класс который мы задокументировали"""
-
-    def some_func(self):
-        """Это функция, которую мы задокументировали"""
-        pass
-
-
-print(DockedClass.__doc__)
-print(DockedClass.some_func.__doc__)
+# class DockedClass:
+#     """Это просто класс который мы задокументировали"""
+#
+#     def some_func(self):
+#         """Это функция, которую мы задокументировали"""
+#         pass
+#
+#
+# print(DockedClass.__doc__)
+# print(DockedClass.some_func.__doc__)
 
 ##########################################################################
 ############################ Абстрактные классы ##########################
@@ -75,17 +75,227 @@ print(DockedClass.some_func.__doc__)
 # Абстрактный класс - это класс, который существует, как некий контракт или соглашение между разработчиками для
 # удобства и порядка.
 from abc import ABC, abstractmethod
+from os import system
 
 
-class BaseClient(ABC):
-    """Базовый клиент с методами, которые должны иметь ВСЕ клиенты-наследники"""
+# class BaseClient(ABC):
+#     """Базовый клиент с методами, которые должны иметь ВСЕ клиенты-наследники"""
+#
+#     @abstractmethod
+#     def ping(self):
+#         """Каждый клиент должен иметь возможность пинговать свой ресурс"""
+#         pass
+#
+#     @abstractmethod
+#     def _get(self):
+#         pass
+#
+#     @abstractmethod
+#     def _post(self):
+#         pass
 
-    @abstractmethod
-    def ping(self):
-        """Каждый клиент должен иметь возможность"""
-        pass
 
-    @abstractmethod
-    def set_rps_for_client(self):
-        """Устанавливаем rps для клиента"""
-        pass
+# теперь представим, что у нас есть несколько сервисов, которые находятся на разных адресах
+# class GoogleClient(BaseClient):
+#     def __init__(self):
+#         self.url = "google.com"
+#
+#     def ping(self):
+#         print(system(f"ping -i 1 -c 1 {self.url}"))
+#
+#     def _get(self):
+#         pass
+#
+#     def _post(self):
+#         pass
+#
+#
+# class YouTubeClient(BaseClient):
+#     def __init__(self):
+#         self.url = "youtube.com"
+#
+#     def ping(self):
+#         print(system(f"ping -i 1 -c 1 {self.url}"))
+#
+#     def _get(self):
+#         pass
+#
+#     def _post(self):
+#         pass
+#
+#
+# yt_client = YouTubeClient()
+# g_client = GoogleClient()
+# yt_client.ping()
+# g_client.ping()
+
+##########################################################################
+######################## Наследование базовых типов ######################
+##########################################################################
+
+# Если вдруг вы захотите отнаследоваться от базовых классов dict, list, string, то имейте в виду, что переопределить
+# поведение некоторых методов в дочернем классе не получится!
+# from collections import UserDict
+#
+#
+# class DoplerDict(dict):
+#     def __setitem__(self, key, value):
+#         super().__setitem__(key, [value] * 2)
+#
+#
+# class DoplerDictColl(UserDict):
+#     def __setitem__(self, key, value):
+#         super().__setitem__(key, [value] * 2)
+
+
+# тут то, что задаём при инициализации не отработает
+# dopler_dict = DoplerDict(zero=0, five=5)
+# dopler_dict["one"] = 1
+# dopler_dict["two"] = 2
+# dopler_dict["three"] = 3
+# print(dopler_dict)
+
+# тут всё отработает как ожидалось
+# dopler_dict_2 = DoplerDictColl(zero=0, five=5)
+# dopler_dict_2[1] = 1
+# dopler_dict_2[2] = 2
+# dopler_dict_2[3] = 3
+# print(dopler_dict_2)
+
+# Со списками и строками ситуация такая же!!! Если вдруг вам нужно будет создавать коллекцию, которая переопределяет
+# методы базовых - используйте наследование от типов из модуля collections!
+
+
+# собственно методы доступа к элементам коллекции это тоже магические методы:
+# class MyDictCollection(UserDict):
+#     def __getitem__(self, key):
+#         return super().__getitem__(key * 2)
+#
+#
+# my_dict = MyDictCollection(one=1, oneone=11)
+# print(my_dict['one'])
+
+
+##########################################################################
+######################### Итераторы и генераторы  ########################
+##########################################################################
+
+# бывает такая ситуация, когда приходится работать с большой коллекцией элементов, которую можно описать определённой
+# закономерностью. Например числа от 0 до 100_000. Мы могли бы реализовать список с таким наполнением следующим образом:
+
+# num = 0
+# res_list = []
+# while num < 100_000:
+#     res_list.append(num)
+#     num += 1
+
+# print(res_list)
+# Неприятность использования такого подхода состоит в том, что нам приходится генерировать и хранить всю
+# последовательность, хотя для работы нам единовременно чаще всего бывает нужно только 1 число или нужна какая-то часть
+# среза последовательности, но не вся целиком. А может и вообще из всей последовательности нам потребуется 100 чисел, а
+# в последовательности их миллион (или 100 миллионов). Давайте оценим затраты на хранение такого объекта в памяти,
+# а также оценим время работы программы:
+
+# import sys
+# from time import time
+#
+# start = time()
+# num = 0
+# res_list = []
+# while num < 100_000_000:
+#     res_list.append(num)
+#     num += 1
+#
+# print(time() - start)
+# print(sys.getsizeof(res_list))
+
+
+# Неприятность номер два состоит в том, что нет возможности переключить контекст исполнения. Иначе говоря крайне
+# сложно написать поддерживаемый элегантный код, который позволял бы получать по запросу значения, потом выполнять
+# какую-то логику и снова генерировать очередное. На помощь нам приходят генераторные функции:
+
+def get_func(cnt):
+    """Результатом этой функции будет ОБЪЕКТ-ГЕНЕРАТОР! Такая функция сохраняет состояние!"""
+    num = 0
+    while num < cnt:
+        yield num  # логика выполняется от yield до yield! yield возвращает значение!
+        num += 1
+
+# вуаля! Такая функция позволяет получать значения по запросу!
+
+
+# gen = get_func(100)
+# print(gen)
+#
+# # дальше с помощью функции next можем генерировать очередное значение
+# print(next(gen))
+# print(next(gen))
+# print(next(gen))
+# print(next(gen))
+# print(next(gen))
+#
+# # как только закончатся значения будет сгенерировано StopIterationError:
+# while True:
+#     print(next(gen))
+
+# объект генератор можно "выстрелить" только вперед, кк исходному значению возврата не предусмотрено, если хочется
+# снова получить последовательность - надо делать новый объект.
+
+# а теперь самое главное: цикл for под капотом дёргает именно функцию next от возвращаемого итератора!
+l = [1, 2, 3, 4]
+# print(next(l))  # упадёт с ошибкой
+# it = iter(l)
+# print(next(it))  # а вот тут пойдёт итерация
+
+# по факту получается что когда вы пишите цикл for вы делаете вот что:
+try:
+    it = iter(l)
+    while True:
+        print(next(it))
+except StopIteration:
+    pass
+
+
+# но если вы попали в экзотическую ситуацию и вам надо написать свою собственную коллекцию (ну мало ли)
+class MyCollection:
+    def __init__(self, end_val, start_val=0):
+        self.start_val = start_val
+        self.end_val = end_val
+        self.current = start_val
+
+    def __iter__(self):
+        """Тут надо вернуть как раз какой-то итератор! Объект-генератор - это подвид итератора!"""
+        while self.current <= self.end_val:
+            yield self.current
+            self.current += 1
+
+
+# ещё более экзотичная ситуация, когда нужно написать свой кастомный итератор!
+class MyIterator:
+    def __init__(self, end_val, start_val=0):
+        self.start_val = start_val
+        self.end_val = end_val
+        self.current = start_val
+
+    def __next__(self):
+        if self.current <= self.end_val:
+            self.current += 1
+            return self.current
+
+    def __iter__(self):
+        """Итератор сам для себя является итератором"""
+        return self
+
+
+# и теперь вкорячим этот итератор в нашу коллекцию:
+class MyCollectionV2:
+    def __init__(self, end_val, start_val=0):
+        self.start_val = start_val
+        self.end_val = end_val
+
+    def __iter__(self):
+        """Теперь возвращаем объект нашего кастомного итератора!"""
+        return MyIterator(end_val=self.start_val, start_val=self.start_val)
+
+
+# Таким образом мы разделяем ответственность! Коллекция отвечает за хранение данных. Итератор - за их перебор!
