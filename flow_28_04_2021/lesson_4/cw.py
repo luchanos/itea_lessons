@@ -11,7 +11,7 @@
 """
 
 # бывает так, что у нас открыто очень много файлов (по ошибке, потому что не предусмотрен механизм закрытия)
-# f_o_lst = [open("testfile.txt", "r") for _ in range(100_000)] # OSError: Too many open files: 'testfile.txt'
+f_o_lst = [open("testfile.txt", "r") for _ in range(100_000)] # OSError: Too many open files: 'testfile.txt'
 # чтобы такого не было надо отлавливать потенциальные ошибки:
 
 # try:
@@ -305,7 +305,7 @@ class MyCollectionV2:
 
     def __iter__(self):
         """Теперь возвращаем объект нашего кастомного итератора!"""
-        return MyIterator(end_val=self.start_val, start_val=self.start_val)
+        return MyIterator(end_val=self.end_val, start_val=self.start_val)
 
 
 # Таким образом мы разделяем ответственность! Коллекция отвечает за хранение данных. Итератор - за их перебор!
