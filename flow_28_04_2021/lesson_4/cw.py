@@ -1,9 +1,10 @@
 """1. Реализовать функцию, которая на вход принимает целое положительное число n и возвращает при вызове
  объект-генератор, который по запросу будет возвращать значение факториала всех чисел от 0 до n.
+ 5! = 1 * 2 * 3 * 4 * 5
 
  2. Создайте абстрактный класс «Оргтехника», который будет базовым для классов-наследников.
- Эти классы — конкретные типы оргтехники (принтер, сканер, ксерокс). В базовом классе определите абстрактные методы,
- общие для приведённых типов. В классах-наследниках реализуйте их, а также добавьте уникальные для каждого
+ Эти классы — конкретные типы оргтехники (принтер, сканер, ксерокс и т.д.). В базовом классе определите абстрактные
+ методы, общие для приведённых типов. В классах-наследниках реализуйте их, а также добавьте уникальные для каждого
  типа оргтехники функциональные возможности.
 
  Также создайте класс «Склад», экземпляр которого будет способен принимать в себя объекты техники на хранение.
@@ -11,7 +12,7 @@
 """
 
 # бывает так, что у нас открыто очень много файлов (по ошибке, потому что не предусмотрен механизм закрытия)
-f_o_lst = [open("testfile.txt", "r") for _ in range(100_000)] # OSError: Too many open files: 'testfile.txt'
+# f_o_lst = [open("testfile.txt", "r") for _ in range(100_000)] # OSError: Too many open files: 'testfile.txt'
 # чтобы такого не было надо отлавливать потенциальные ошибки:
 
 # try:
@@ -146,8 +147,8 @@ from os import system
 # Если вдруг вы захотите отнаследоваться от базовых классов dict, list, string, то имейте в виду, что переопределить
 # поведение некоторых методов в дочернем классе не получится!
 # from collections import UserDict
-#
-#
+
+
 # class DoplerDict(dict):
 #     def __setitem__(self, key, value):
 #         super().__setitem__(key, [value] * 2)
@@ -224,12 +225,12 @@ from os import system
 # сложно написать поддерживаемый элегантный код, который позволял бы получать по запросу значения, потом выполнять
 # какую-то логику и снова генерировать очередное. На помощь нам приходят генераторные функции:
 
-def get_func(cnt):
-    """Результатом этой функции будет ОБЪЕКТ-ГЕНЕРАТОР! Такая функция сохраняет состояние!"""
-    num = 0
-    while num < cnt:
-        yield num  # логика выполняется от yield до yield! yield возвращает значение!
-        num += 1
+# def get_func(cnt):
+#     """Результатом этой функции будет ОБЪЕКТ-ГЕНЕРАТОР! Такая функция сохраняет состояние!"""
+#     num = 0
+#     while num < cnt:
+#         yield num  # логика выполняется от yield до yield! yield возвращает значение!
+#         num += 1
 
 # вуаля! Такая функция позволяет получать значения по запросу!
 
@@ -258,54 +259,54 @@ l = [1, 2, 3, 4]
 # print(next(it))  # а вот тут пойдёт итерация
 
 # по факту получается что когда вы пишите цикл for вы делаете вот что:
-try:
-    it = iter(l)
-    while True:
-        print(next(it))
-except StopIteration:
-    pass
-
-
-# но если вы попали в экзотическую ситуацию и вам надо написать свою собственную коллекцию (ну мало ли)
-class MyCollection:
-    def __init__(self, end_val, start_val=0):
-        self.start_val = start_val
-        self.end_val = end_val
-        self.current = start_val
-
-    def __iter__(self):
-        """Тут надо вернуть как раз какой-то итератор! Объект-генератор - это подвид итератора!"""
-        while self.current <= self.end_val:
-            yield self.current
-            self.current += 1
-
-
-# ещё более экзотичная ситуация, когда нужно написать свой кастомный итератор!
-class MyIterator:
-    def __init__(self, end_val, start_val=0):
-        self.start_val = start_val
-        self.end_val = end_val
-        self.current = start_val
-
-    def __next__(self):
-        if self.current <= self.end_val:
-            self.current += 1
-            return self.current
-
-    def __iter__(self):
-        """Итератор сам для себя является итератором"""
-        return self
+# try:
+#     it = iter(l)
+#     while True:
+#         print(next(it))
+# except StopIteration:
+#     pass
+#
+#
+# # но если вы попали в экзотическую ситуацию и вам надо написать свою собственную коллекцию (ну мало ли)
+# class MyCollection:
+#     def __init__(self, end_val, start_val=0):
+#         self.start_val = start_val
+#         self.end_val = end_val
+#         self.current = start_val
+#
+#     def __iter__(self):
+#         """Тут надо вернуть как раз какой-то итератор! Объект-генератор - это подвид итератора!"""
+#         while self.current <= self.end_val:
+#             yield self.current
+#             self.current += 1
+#
+#
+# # ещё более экзотичная ситуация, когда нужно написать свой кастомный итератор!
+# class MyIterator:
+#     def __init__(self, end_val, start_val=0):
+#         self.start_val = start_val
+#         self.end_val = end_val
+#         self.current = start_val
+#
+#     def __next__(self):
+#         if self.current <= self.end_val:
+#             self.current += 1
+#             return self.current
+#
+#     def __iter__(self):
+#         """Итератор сам для себя является итератором"""
+#         return self
 
 
 # и теперь вкорячим этот итератор в нашу коллекцию:
-class MyCollectionV2:
-    def __init__(self, end_val, start_val=0):
-        self.start_val = start_val
-        self.end_val = end_val
-
-    def __iter__(self):
-        """Теперь возвращаем объект нашего кастомного итератора!"""
-        return MyIterator(end_val=self.end_val, start_val=self.start_val)
+# class MyCollectionV2:
+#     def __init__(self, end_val, start_val=0):
+#         self.start_val = start_val
+#         self.end_val = end_val
+#
+#     def __iter__(self):
+#         """Теперь возвращаем объект нашего кастомного итератора!"""
+#         return MyIterator(end_val=self.end_val, start_val=self.start_val)
 
 
 # Таким образом мы разделяем ответственность! Коллекция отвечает за хранение данных. Итератор - за их перебор!
