@@ -13,6 +13,9 @@
 # SQL - SQL — простыми словами, это язык программирования структурированных запросов
 # (SQL, Structured Query Language), который используется в качестве способа общения с базами данных.
 
+# SQLite - самая легковесная БД, её структура умещается в файл, который можно перекидывать хоть
+# по сети или в телеграмме или по почте.
+
 # СОЗДАНИЕ ПРОСТОЙ ТАБЛИЦЫ:
 """CREATE TABLE products (
     product_id INTEGER,
@@ -73,3 +76,18 @@ CREATE TABLE IF NOT EXISTS products (
 """
 
 # Теперь при попытке записать данные, в которых мы что-то недодали будет падать ошибка
+# А теперь давайте представим, что мы хотим, чтобы у нас id присваивался базой автоматически и
+# возвращался нам в качестве ответа:
+
+"""
+CREATE TABLE IF NOT EXISTS products (
+    product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    description TEXT NOT NULL, -- теперь при вставке данных эта колонка не может оставаться NULL
+    quantity INTEGER NOT NULL -- теперь при вставке данных эта колонка не может оставаться NULL
+    );
+"""
+
+# Теперь id явно вставлять не нужно:
+"""
+INSERT INTO products (description, quantity) VALUES ('Лук', 120) RETURNING product_id;
+"""
