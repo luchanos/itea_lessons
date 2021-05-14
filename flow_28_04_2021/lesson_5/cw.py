@@ -1,8 +1,34 @@
-"""SQL и базы данных"""
+"""SQL и базы данных
+
+Создать базу данных с названием order_service_db. Создать в ней несколько таблиц:
+
+Таблица ЗАЯВКИ (orders)
+- id заявки (order_id) - целое число
+- дата создания (created_dt) - текст
+- дата обновления заявки (updated_dt) - текст
+- тип заявки (order_type) - текст
+- описание (description) - текст
+- статус заявки (status) - текст
+- серийный номер аппарата (serial_no) - целое число
+- id создателя заявки (creator_id) - целое число
+
+Таблица СОТРУДНИКИ (employees)
+- id сотрудника (employee_id) - целое число
+- ФИО (fio) - текст
+- должность (position) - должность
+- id подразделения (department_id) - целое число
+
+Таблица ПОДРАЗДЕЛЕНИЯ (departments)
+- id подразделения (department_id) - целое число
+- id руководителя (director_id) - целое число
+- название подразделения (department_name) - текст
+
+Написать код создания таблиц на языке SQL, предусмотреть необходимые ограничения.
+"""
 
 # ЧТО ТАКОЕ БАЗА ДАННЫХ?
 # Простым языком, база данных это структурированное хранилище информации. В зависимости от структуры
-# построения баз данных они могут быть:
+# построения баз данных они могут быть (неполный список):
 # - реляционные (Postgresql, SQLite)
 # - документоориентированные (MongoDB)
 # - time-series (InfluxDB)
@@ -90,7 +116,45 @@ CREATE TABLE IF NOT EXISTS products (
     );
 """
 
-# Теперь id явно вставлять не нужно:
+# # Теперь id явно вставлять не нужно:
+# """
+# INSERT INTO products (description, quantity) VALUES ('Лук', 120) RETURNING product_id;
+# """
+
+# Теперь про отношения - можно связыавть таблицы через FOREIGN KEY - по сути наши таблицы связываются друг с другом
+# через какую-либо колонку.
+
 """
-INSERT INTO products (description, quantity) VALUES ('Лук', 120) RETURNING product_id;
+CREATE TABLE IF NOT EXISTS shops (
+    shop_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    description TEXT NOT NULL,
+    address TEXT NOT NULL,
+    product_id INTEGER NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products (product_id) -- указываем какие колонки будут связанными
+    );
 """
+
+# Теперь у нас не получится вставить в таблицу, которая учитывает наличие продуктов в магазинах те продукты, которые
+# отсутствут в базе products
+
+
+"""
+CREATE TABLE IF NOT EXISTS shops (
+    shop_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    description TEXT NOT NULL,
+    address TEXT NOT NULL,
+    product_id INTEGER NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products (product_id)
+    ON UPDATE SET NULL  -- при изменении данных в соответствующей колонке в родительской таблице значение станет NULL
+    ON DELETE CASCADE -- при удалении данных из родительской таблице данные в дочерней тоже будут удалены
+    );
+"""
+
+# Случаются ситуации, когда нужно изменить структуру существующей таблицы. Для этого используется механизм ALTER TABLE
+"""
+ALTER TABLE shops ADD COLUMN created_dt TEXT;
+"""
+
+# Индексы - механизм, позволяющий оптимизировать поиск по таблице. Напоминает ситуацию с теефонной книгой.
+
+# Для того, чтобы удобно подключаться к базе и просматривать данные можно использовать DBeaver
