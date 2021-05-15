@@ -12,3 +12,4 @@
 5. Postman - https://www.postman.com/downloads/
 6. SQLite - https://www.tutorialspoint.com/sqlite/sqlite_installation.htm
 7. SQLite Studio - https://sqlitestudio.pl/
+8. DBeaver - https://dbeaver.io/download/

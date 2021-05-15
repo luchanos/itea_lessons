@@ -181,3 +181,48 @@ CREATE index description_idx ON products(quantity)
 # а её поддержкой занимается очень большое комьюнити по всему миру.
 
 # Для того, чтобы удобно подключаться к базам и просматривать данные можно использовать DBeaver
+
+# Модуль Datetime. Теперь немного поработаем с датами и временем.
+# Годная статья - shorturl.at/awGIL (сделал шорт урл, чтобы не было длинной ссылки)
+from datetime import time, date, datetime, timedelta  # time - хранит время, date - дату, datetime - и то и другое
+from time import sleep
+
+now_datetime = datetime.now()  # получаем текущее время и дату
+print(type(now_datetime), now_datetime)
+
+now_date = date.today()
+print(type(now_date), now_date)
+
+now = datetime.now()
+now_time = datetime.now().time()
+
+# sleep(1)
+# print(datetime.now() - now)
+
+# строкой можно задавать шаблон отображения
+current_time = now.strftime("%H:%M:%S")
+current_time_2 = now.strftime("%d %h %Y --- %H:%M:%S")  # преобразовываем дату в строку
+print("Current Time =", current_time)
+print(type(current_time_2), current_time_2)
+
+
+# если хотим задавать часовой пояс
+import pytz
+
+# tz_NY = pytz.timezone('America/New_York')
+# datetime_NY = datetime.now(tz_NY)
+# print("NY time:", datetime_NY.strftime("%H:%M:%S"))
+#
+# tz_London = pytz.timezone('Europe/London')
+# datetime_London = datetime.now(tz_London)
+# print("London time:", datetime_London.strftime("%H:%M:%S"))
+
+# несколько дней назад:
+my_date = datetime.now() - timedelta(days=2)
+print(my_date)
+
+date_time_str = '2018-06-29 08:15:27.243860'
+date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
+datestring = '2021-05-26, 13:05'
+date_time_obj_2 = datetime.strptime(datestring, '%Y-%m-%d, %H:%M')
+print(date_time_obj_2)
