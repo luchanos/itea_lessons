@@ -182,6 +182,18 @@ CREATE index description_idx ON products(quantity)
 
 # Для того, чтобы удобно подключаться к базам и просматривать данные можно использовать DBeaver
 
+# в PostgreSQL будет несколько отличий в рамках того, как мы объявляем таблицу
+# CREATE TABLE IF NOT EXISTS shops (
+#     shop_id SERIAL PRIMARY KEY, -- тут уже нет автоинкремента, тут serial
+#     description TEXT NOT NULL,
+#     address TEXT NOT NULL,
+#     created_dt date, -- появляется новый тип колонки, не строка, а дата
+#     product_id INTEGER NOT NULL,
+#     FOREIGN KEY (product_id) REFERENCES products (product_id)
+#     ON UPDATE SET NULL
+#     ON DELETE CASCADE
+#     );
+
 # Модуль Datetime. Теперь немного поработаем с датами и временем.
 # Годная статья - shorturl.at/awGIL (сделал шорт урл, чтобы не было длинной ссылки)
 from datetime import time, date, datetime, timedelta  # time - хранит время, date - дату, datetime - и то и другое

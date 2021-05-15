@@ -75,23 +75,40 @@ product_data = [("Репчатый лук от отечественного пр
 SELECT_QUERY = """SELECT * FROM products"""
 
 # получаем данные из БД
-with conn.cursor() as cursor:
-    cursor.execute(SELECT_QUERY)
-    print(cursor.fetchall())
+# with conn.cursor() as cursor:
+#     cursor.execute(SELECT_QUERY)
+#     print(cursor.fetchall())
 
 # записываем данные в БД
 # sql.SQL - это обёртка вокруг строки для того, чтобы можно было без проблем прокидывать параметризованные запросы
 INSERT_QUERY = sql.SQL("""INSERT INTO products (description, quantity, product_name) VALUES (%s, %s, %s)""")
 
 # два контекстных менеджера
-with conn:
-    with conn.cursor() as cursor:
-        for product in product_data:
-            cursor.execute(INSERT_QUERY, product)
+# with conn:
+#     with conn.cursor() as cursor:
+#         for product in product_data:
+#             cursor.execute(INSERT_QUERY, product)
 
 # можно свести в один:
-with conn, conn.cursor() as cursor:
-    for product in product_data:
-        cursor.execute(INSERT_QUERY, product)
+# with conn, conn.cursor() as cursor:
+#     for product in product_data:
+#         cursor.execute(INSERT_QUERY, product)
 
 # подробнее вот тут - https://www.psycopg.org/docs/sql.html
+
+# а теперь прикрутим дату создания в наш запрос на вставку:
+from datetime import datetime
+
+shop_data = ("магазин Светлый", "г.Кызыл, ул.К.Маркса, д.3", datetime.now(), 86)
+INSERT_QUERY_2 = sql.SQL("""INSERT INTO shops (description, address, created_dt, product_id) VALUES (%s, %s, %s, %s)""")
+# with conn, conn.cursor() as cursor:
+#     cursor.execute(INSERT_QUERY_2, shop_data)
+
+INSERT_QUERY_3 = sql.SQL("""
+INSERT INTO shops (description, address, created_dt, product_id) 
+VALUES (%s, %s, %s, %s) RETURNING shop_id -- позволяет вернуть нам айдиху обратно, которая была создана
+""")
+
+with conn, conn.cursor() as cursor:
+    cursor.execute(INSERT_QUERY_3, shop_data)
+    print(cursor.fetchall())
