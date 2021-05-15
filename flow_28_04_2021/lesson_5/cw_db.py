@@ -51,14 +51,47 @@ VALUES ($1, $2, $3, $4)
 # fetchone - вернет очередное значение из результирующего набора
 # fetchall - вернет все данные из результирующего набора
 # fetchmany - вернет столько значений, сколько укажем в параметре
-res = cursor.execute("""SELECT * FROM shops""")
+# res = cursor.execute("""SELECT * FROM shops""")
 # data = cursor.fetchall()
 # data = cursor.fetchone()
-data = cursor.fetchmany(2)
-print(data)
+# data = cursor.fetchmany(2)
+# print(data)
 
 
 # для PostgreSQL существует библиотека psycopg2
 import psycopg2
+from psycopg2 import sql
 
-conn = psycopg2.connect("postgres://postgres:dbpass@0.0.0.0:8010/offers_db")
+conn = psycopg2.connect("postgres://postgres:dbpass@0.0.0.0:5432/postgres")
+
+# принцип работы такое же, как и с библиотекой sqlite3
+
+product_data = [("Репчатый лук от отечественного производителя", 100, "Лук репчатый"),
+                ("Капуста белокочанная высшего сорта", 200, "Капуста"),
+                ("Картофель молодой", 300, "Картофель"),
+                ("Свекла сахарная импортная", 50, "Свекла сахарная"),
+                ("Яйцо куриные высшей категории", 70, "Яйцо куриное")]
+
+SELECT_QUERY = """SELECT * FROM products"""
+
+# получаем данные из БД
+with conn.cursor() as cursor:
+    cursor.execute(SELECT_QUERY)
+    print(cursor.fetchall())
+
+# записываем данные в БД
+# sql.SQL - это обёртка вокруг строки для того, чтобы можно было без проблем прокидывать параметризованные запросы
+INSERT_QUERY = sql.SQL("""INSERT INTO products (description, quantity, product_name) VALUES (%s, %s, %s)""")
+
+# два контекстных менеджера
+with conn:
+    with conn.cursor() as cursor:
+        for product in product_data:
+            cursor.execute(INSERT_QUERY, product)
+
+# можно свести в один:
+with conn, conn.cursor() as cursor:
+    for product in product_data:
+        cursor.execute(INSERT_QUERY, product)
+
+# подробнее вот тут - https://www.psycopg.org/docs/sql.html
