@@ -97,9 +97,10 @@ INSERT_QUERY = sql.SQL("""INSERT INTO products (description, quantity, product_n
 # подробнее вот тут - https://www.psycopg.org/docs/sql.html
 
 # а теперь прикрутим дату создания в наш запрос на вставку:
-from datetime import datetime
+from datetime import datetime, timedelta
 
 shop_data = ("магазин Светлый", "г.Кызыл, ул.К.Маркса, д.3", datetime.now(), 86)
+shop_data_2 = ("магазин Темный", "г.Кызыл, ул.К.Маркса, д.4", datetime.now() - timedelta(days=2), 87)
 INSERT_QUERY_2 = sql.SQL("""INSERT INTO shops (description, address, created_dt, product_id) VALUES (%s, %s, %s, %s)""")
 # with conn, conn.cursor() as cursor:
 #     cursor.execute(INSERT_QUERY_2, shop_data)
@@ -110,5 +111,8 @@ VALUES (%s, %s, %s, %s) RETURNING shop_id -- позволяет вернуть �
 """)
 
 with conn, conn.cursor() as cursor:
-    cursor.execute(INSERT_QUERY_3, shop_data)
+    cursor.execute(INSERT_QUERY_3, shop_data_2)
     print(cursor.fetchall())
+
+# Запрос на выборку по временному диапазону:
+"""SELECT * FROM shops WHERE created_dt BETWEEN '2021-05-11' AND now() - INTERVAL '2 days'"""
