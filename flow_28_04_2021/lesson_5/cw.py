@@ -194,6 +194,15 @@ CREATE index description_idx ON products(quantity)
 #     ON DELETE CASCADE
 #     );
 
+# Можно изменять существующие данные в базе:
+"""UPDATE shops SET description = 'магазин неСветлый' WHERE shop_id = 3"""
+
+# upsert - операция на вставку или обновление. То есть вставить, если такой записи нет или же обновить существующую:
+"""INSERT INTO shops (shop_id, description, address,created_dt,product_id) VALUES
+(5, 'магазин Темный','г.Кызыл, ул.К.Маркса, д.4','2021-05-13',87)
+ON CONFLICT (shop_id) DO 
+UPDATE SET description = 'магазин неТемный', address = 'г.Кызыл, ул.К.Маркса, д.4', created_dt = '2021-05-13'"""
+
 # Модуль Datetime. Теперь немного поработаем с датами и временем.
 # Годная статья - shorturl.at/awGIL (сделал шорт урл, чтобы не было длинной ссылки)
 from datetime import time, date, datetime, timedelta  # time - хранит время, date - дату, datetime - и то и другое
