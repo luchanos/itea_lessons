@@ -104,6 +104,11 @@ CREATE TABLE IF NOT EXISTS products (
     );
 """
 
+# Сначала идут выборка из таблицы, потом идет сортировка выборки, затем идёт ограничение выдачи (лимит)
+"""
+SELECT product_id FROM products ORDER BY product_id DESC LIMIT 1;
+"""
+
 # Теперь при попытке записать данные, в которых мы что-то недодали будет падать ошибка
 # А теперь давайте представим, что мы хотим, чтобы у нас id присваивался базой автоматически и
 # возвращался нам в качестве ответа:
@@ -183,16 +188,18 @@ CREATE index description_idx ON products(quantity)
 # Для того, чтобы удобно подключаться к базам и просматривать данные можно использовать DBeaver
 
 # в PostgreSQL будет несколько отличий в рамках того, как мы объявляем таблицу
-# CREATE TABLE IF NOT EXISTS shops (
-#     shop_id SERIAL PRIMARY KEY, -- тут уже нет автоинкремента, тут serial
-#     description TEXT NOT NULL,
-#     address TEXT NOT NULL,
-#     created_dt date, -- появляется новый тип колонки, не строка, а дата
-#     product_id INTEGER NOT NULL,
-#     FOREIGN KEY (product_id) REFERENCES products (product_id)
-#     ON UPDATE SET NULL
-#     ON DELETE CASCADE
-#     );
+"""
+CREATE TABLE IF NOT EXISTS shops (
+    shop_id SERIAL PRIMARY KEY, -- тут уже нет автоинкремента, тут serial
+    description TEXT NOT NULL,
+    address TEXT NOT NULL,
+    created_dt date, -- появляется новый тип колонки, не строка, а дата
+    product_id INTEGER NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products (product_id)
+    ON UPDATE SET NULL
+    ON DELETE CASCADE
+    );
+"""
 
 # Можно изменять существующие данные в базе:
 """UPDATE shops SET description = 'магазин неСветлый' WHERE shop_id = 3"""
@@ -208,23 +215,24 @@ UPDATE SET description = 'магазин неТемный', address = 'г.Кыз
 from datetime import time, date, datetime, timedelta  # time - хранит время, date - дату, datetime - и то и другое
 from time import sleep
 
-now_datetime = datetime.now()  # получаем текущее время и дату
-print(type(now_datetime), now_datetime)
+# now_datetime = datetime.now()  # получаем текущее время и дату
+# print(type(now_datetime), now_datetime)
 
-now_date = date.today()
-print(type(now_date), now_date)
+# now_date = date.today()
+# print(type(now_date), now_date)
 
 now = datetime.now()
-now_time = datetime.now().time()
+# now_time = datetime.now().time()
+# print(type(now_time), now_time)
 
 # sleep(1)
 # print(datetime.now() - now)
 
 # строкой можно задавать шаблон отображения
-current_time = now.strftime("%H:%M:%S")
-current_time_2 = now.strftime("%d %h %Y --- %H:%M:%S")  # преобразовываем дату в строку
-print("Current Time =", current_time)
-print(type(current_time_2), current_time_2)
+# current_time = now.strftime("%H:%M:%S")
+# current_time_2 = now.strftime("%d %h %Y Я ЛЮБЛЮ ПИТОН!!! %H:%M:%S")  # преобразовываем дату в строку
+# print("Current Time or Date =", current_time_2, type(current_time_2))
+# print(type(current_time_2), current_time_2)
 
 
 # если хотим задавать часовой пояс
@@ -233,17 +241,18 @@ import pytz
 # tz_NY = pytz.timezone('America/New_York')
 # datetime_NY = datetime.now(tz_NY)
 # print("NY time:", datetime_NY.strftime("%H:%M:%S"))
-#
+
 # tz_London = pytz.timezone('Europe/London')
 # datetime_London = datetime.now(tz_London)
 # print("London time:", datetime_London.strftime("%H:%M:%S"))
 
 # несколько дней назад:
-my_date = datetime.now() - timedelta(days=2)
-print(my_date)
+# my_date = datetime.now() - timedelta(days=2)
+# print(my_date)
 
-date_time_str = '2018-06-29 08:15:27.243860'
-date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
-datestring = '2021-05-26, 13:05'
-date_time_obj_2 = datetime.strptime(datestring, '%Y-%m-%d, %H:%M')
-print(date_time_obj_2)
+# date_time_str = '2018-06-29 08:15:27.243860'
+# date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
+# print(type(date_time_obj), date_time_obj)
+# datestring = '2021-05-26, Я ЛЮБЛЮ ПИТОН!!! 13:05'
+# date_time_obj_2 = datetime.strptime(datestring, '%Y-%m-%d, Я ЛЮБЛЮ ПИТОН!!! %H:%M')
+# print(type(date_time_obj_2), date_time_obj_2)
