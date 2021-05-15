@@ -117,9 +117,9 @@ CREATE TABLE IF NOT EXISTS products (
 """
 
 # # Теперь id явно вставлять не нужно:
-# """
-# INSERT INTO products (description, quantity) VALUES ('Лук', 120) RETURNING product_id;
-# """
+"""
+INSERT INTO products (description, quantity) VALUES ('Лук', 120) RETURNING product_id;
+"""
 
 # Теперь про отношения - можно связыавть таблицы через FOREIGN KEY - по сути наши таблицы связываются друг с другом
 # через какую-либо колонку.

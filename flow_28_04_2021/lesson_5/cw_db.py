@@ -56,3 +56,9 @@ res = cursor.execute("""SELECT * FROM shops""")
 # data = cursor.fetchone()
 data = cursor.fetchmany(2)
 print(data)
+
+
+# для PostgreSQL существует библиотека psycopg2
+import psycopg2
+
+conn = psycopg2.connect("postgres://postgres:dbpass@0.0.0.0:8010/offers_db")
