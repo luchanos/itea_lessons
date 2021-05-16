@@ -18,37 +18,43 @@ class Matrix:
             total_res.append(str_res)
         return Matrix(total_res)
 
-    def __add_2__(self, other):
-        """Ещё один вариант решения"""
-        return Matrix([
-            self.matrix_data[i][j] + other.matrix_data[i][j]
-            for i in range(len(self.matrix_data))
-            for j in range(len(self.matrix_data[0]))
-        ])
-
     def __sub__(self, other):
-        """Ещё один вариант решения"""
-        return Matrix([
-            self.matrix_data[i][j] - other.matrix_data[i][j]
-            for i in range(len(self.matrix_data))
-            for j in range(len(self.matrix_data[0]))
-        ])
+        total_res = []
+        for i in range(len(self.matrix_data)):
+            str_res = []
+            for j in range(len(self.matrix_data[0])):
+                str_res.append(self.matrix_data[i][j] - other.matrix_data[i][j])
+            total_res.append(str_res)
+        return Matrix(total_res)
 
     def __mul__(self, num):
-        return Matrix([
-            self.matrix_data[i][j] * num
-            for i in range(len(self.matrix_data))
-            for j in range(len(self.matrix_data[0]))
-        ])
+        total_res = []
+        for i in range(len(self.matrix_data)):
+            str_res = []
+            for j in range(len(self.matrix_data[0])):
+                str_res.append(self.matrix_data[i][j] * num)
+            total_res.append(str_res)
+        return Matrix(total_res)
 
     def __truediv__(self, num):
-        return Matrix([
-            self.matrix_data[i][j] / num
-            for i in range(len(self.matrix_data))
-            for j in range(len(self.matrix_data[0]))
-        ])
+        total_res = []
+        for i in range(len(self.matrix_data)):
+            str_res = []
+            for j in range(len(self.matrix_data[0])):
+                str_res.append(self.matrix_data[i][j] / num)
+            total_res.append(str_res)
+        return Matrix(total_res)
+
+    def __eq__(self, other):
+        return self.matrix_data == other.matrix_data
 
     def __str__(self):
+        res_str = ""
+        for el in self.matrix_data:
+            res_str += f"{el}\n"
+        return res_str
+
+    def __repr__(self):
         res_str = ""
         for el in self.matrix_data:
             res_str += f"{el}\n"
