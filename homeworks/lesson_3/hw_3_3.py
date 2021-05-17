@@ -18,8 +18,10 @@ NUM_MAPPER = {
     "Four": "Четыре"
 }
 
-with open("file.txt", "r") as file_for_read, open("new_file.txt", "w") as file_for_write:
-    for readed_line in file_for_read:
-        num, value = readed_line.split(" — ")
-        res = f"{NUM_MAPPER[num]} — {value}"
-        file_for_write.write(res)
+
+def russianizator():
+    with open("file.txt", "r") as file_for_read, open("new_file.txt", "w") as file_for_write:
+        for readed_line in file_for_read:
+            num, value = readed_line.split(" — ")
+            res = f"{NUM_MAPPER[num]} — {value}"
+            file_for_write.write(res)
