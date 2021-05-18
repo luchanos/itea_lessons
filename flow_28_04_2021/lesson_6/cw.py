@@ -84,10 +84,10 @@ SELECT_QUERY = """SELECT * FROM products"""
 INSERT_QUERY = sql.SQL("""INSERT INTO products (description, quantity, product_name) VALUES (%s, %s, %s)""")
 
 # два контекстных менеджера
-# with conn:
-#     with conn.cursor() as cursor:
-#         for product in product_data:
-#             cursor.execute(INSERT_QUERY, product)
+with conn:
+    with conn.cursor() as cursor:
+        for product in product_data:
+            cursor.execute(INSERT_QUERY, product)
 
 # можно свести в один:
 # with conn, conn.cursor() as cursor:
@@ -110,9 +110,11 @@ INSERT INTO shops (description, address, created_dt, product_id)
 VALUES (%s, %s, %s, %s) RETURNING shop_id -- позволяет вернуть нам айдиху обратно, которая была создана
 """)
 
-with conn, conn.cursor() as cursor:
-    cursor.execute(INSERT_QUERY_3, shop_data_2)
-    print(cursor.fetchall())
+# with conn, conn.cursor() as cursor:
+#     cursor.execute(INSERT_QUERY_3, shop_data_2)
+#     print(cursor.fetchall())
 
 # Запрос на выборку по временному диапазону:
-"""SELECT * FROM shops WHERE created_dt BETWEEN '2021-05-11' AND now() - INTERVAL '2 days'"""
+"""
+SELECT * FROM shops WHERE created_dt BETWEEN '2021-05-11' AND now() - INTERVAL '2 days'
+"""

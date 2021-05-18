@@ -35,3 +35,17 @@ SELECT * FROM shops CROSS JOIN products WHERE shops.product_id = products.produc
 """
 SELECT * FROM shops LEFT JOIN products ON shops.product_id = products.product_id
 """
+
+# можно прекрасно использовать математические функции, применительно к колонкам таблицы - такие функции
+# называются агрегатными
+"""
+SELECT sum(quantity) FROM products;
+SELECT avg(quantity) FROM products;
+SELECT max(quantity) FROM products;
+SELECT min(quantity) FROM products;
+"""
+
+# а ещё в sql можно группировать значения по колонкам
+"""
+SELECT count(*), description FROM products GROUP BY (description)
+"""
