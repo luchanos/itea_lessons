@@ -37,7 +37,7 @@ class Connect:
 
 
 connect = Connect("postgres://postgres:dbpass@0.0.0.0:5432/postgres")
-connect_2 = Connect("postgres://postgres:dbpass@0.0.0.0:5432/postgres")
+# connect_2 = Connect("postgres://postgres:dbpass@0.0.0.0:5432/postgres")  # со вторым коннектом УПАДЁМ!
 
 
 # Выход есть! Заводим переменную окружения!
@@ -69,6 +69,10 @@ created_dt DATE NOT NULL,
 updated_dt DATE
 )
 """
+
+# для создания новой миграции - yoyo new trading_db/ -m "table for shops"
+# для прогона миграций - yoyo apply trading_db/ --database postgres://postgres:dbpass@0.0.0.0:5432/postgres
+# откат миграций - yoyo rollback trading_db/ --database postgres://postgres:dbpass@0.0.0.0:5432/postgres
 
 
 class PasswordException(Exception):
