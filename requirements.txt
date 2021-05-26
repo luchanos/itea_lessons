@@ -1,4 +1,4 @@
 pytest==6.2.4
 Flask==1.1.2
 psycopg2-binary==2.8.6
-yoyo-migrations-7.3.2
+yoyo-migrations==7.3.2
