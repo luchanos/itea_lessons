@@ -1,0 +1,1 @@
+{"Onion": {"price": 12, "in_stock": 1000, "description": "\u041b\u0443\u043a"}, "Tomato": {"price": 4, "in_stock": 10000, "description": "\u041f\u043e\u043c\u0438\u0434\u043e\u0440\u044b"}, "Cucumber": {"price": 10, "in_stock": 500, "description": "\u041e\u0433\u0443\u0440\u0446\u044b", "test": [1, 2, 3]}}

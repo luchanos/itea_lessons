@@ -104,12 +104,13 @@ b_str = b'{"Onion": {"price": 12, "in_stock": 1000, "description": "\u041b\u0443
 
 # или
 
-s_str = b'{"Onion": {"price": 12, "in_stock": 1000, "description": "\u041b\u0443\u043a"}, ' \
-        b'"Tomato": {"price": 4, "in_stock": 10000, "description": "\u041f\u043e\u043c\u0438\u0434\u043e\u0440\u044b"}, ' \
-        b'"Cucumber": {"price": 10, "in_stock": 500, "description": "\u041e\u0433\u0443\u0440\u0446\u044b"}}'
-# with open("products_data.json", "r", encoding="UTF-8") as json_f:
-#     products_dict = json.loads(b_str)  # превратит данные из строки/байт-строки в словарь
-# print(type(products_dict), products_dict)
+s_str = '{"Onion": {"price": 12, "in_stock": 1000, "description": "\u041b\u0443\u043a"}, ' \
+        '"Tomato": {"price": 4, "in_stock": 10000, "description": "\u041f\u043e\u043c\u0438\u0434\u043e\u0440\u044b"}, ' \
+        '"Cucumber": {"price": 10, "in_stock": 500, "description": "\u041e\u0433\u0443\u0440\u0446\u044b"}}'
+
+with open("products_data.json", "r", encoding="UTF-8") as json_f:
+    products_dict = json.loads(b_str)  # превратит данные из строки/байт-строки в словарь
+print(type(products_dict), products_dict)
 
 # MongoDB - нереляционная база данных. Хранит данные по сути в виде json.
 # Прекрасно заходит под небольшие проекты. Отличается высокой скоростью работы - на чтение и запись.
