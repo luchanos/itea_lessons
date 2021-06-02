@@ -43,7 +43,7 @@ me.connect("LESSON_8_DB")  # если такой БД нет, то она буд
 # нет понятия таблица, вместо неё понятие коллекция
 class UserProfile(me.Document):
     login = me.StringField(required=True, min_length=3, max_length=120, unique=True)
-    password = me.StringField(required=True, min_length=8)  # в таком виде хранить пароли не стоит, надо хэшировать
+    password = me.StringField(required=True, min_length=2)  # в таком виде хранить пароли не стоит, надо хэшировать
     about_me = me.StringField()
     likes = me.IntField(default=0)
 
@@ -68,7 +68,7 @@ class User(me.Document):
 
     def save(self, *args, **kwargs):
         self.created_at = dt.now()
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 class Products(me.Document):
@@ -126,6 +126,78 @@ print(res.id)  # имеем доступ к id
 # mongod --dbpath Users/data - так я поднимал базу на своём компе (macOS)
 # Compass - интерфейс для работы с БД по типу DBeaver, только для Mongo
 
+# СОЗДАЁМ ТЕСТОВЫЙ НАБОР ДАННЫХ:
+
+user_profiles_list = [
+    {"login": "lol",
+     "password": "123",
+     "about_me": "some lol",
+     "likes": 3},
+    {"login": "kek",
+     "password": "1234",
+     "about_me": "some kek",
+     "likes": 5},
+    {"login": "cheburek",
+     "password": "12345",
+     "about_me": "some cheburek",
+     "likes": 6},
+    {"login": "some_user",
+     "password": "1234567",
+     "about_me": "some some_user",
+     "likes": 0}
+]
+
+
+user_data_list = [
+    {"first_name": "Nikolai",
+     "last_name": "Sviridov",
+     "interests": ["mma", "programming", "blogging"],
+     "age": 29
+     },
+    {"first_name": "Anna",
+     "last_name": "Prozorova",
+     "interests": ["smimming", "dancing", "singing"],
+     "age": 35
+     },
+    {"first_name": "Semen",
+     "last_name": "Ivanov",
+     "interests": ["fishing", "riding"],
+     "age": 21
+     },
+    {"first_name": "Chubaka",
+     "last_name": "Chubakov",
+     "interests": ["barking"],
+     "age": 99
+     }
+]
+
+# first_name = me.StringField(min_length=1, max_length=100, required=True)
+# last_name = me.StringField(min_length=1, max_length=100)
+# interests = me.ListField()
+# age = me.IntField(min_value=12, max_value=99)
+# created_at = me.DateTimeField()
+
+# удалить все записи из коллекций:
+User.objects.all().delete()
+UserProfile.objects.all().delete()
+
+# записываем тестовые данные в БД
+for user_profile_data in zip(user_profiles_list, user_data_list):
+    user_profile = UserProfile(**user_profile_data[0]).save()
+    user = User(user_profile=user_profile, **user_profile_data[1]).save()
+
+
+# вариант комбинированной выборки:
+users = User.objects((me.Q(age__in=[35, 29]) | me.Q(last_name="Chubakov")))
+print(users)
+users = User.objects((me.Q(age=99) & me.Q(last_name="Chubakov")))
+print(users)
+
+
+# правило удаления записей, которые соединены с данной записью (правило обратного удаления)
+# user_profile = me.ReferenceField(UserProfile, reverse_delete_rule=me.CASCADE) # каскадное
+# user_profile = me.ReferenceField(UserProfile, reverse_delete_rule=me.NULLIFY)  # занулить
+
 # КОМАНДЫ ДЛЯ КОНСОЛИ COMPASS:
 
 # use <имя базы данных> - выбираем БД, с которой хотим осуществлять работу.
@@ -135,3 +207,29 @@ print(res.id)  # имеем доступ к id
 # Если мы создали новую БД, но там пока не лежит ни одного документа, то она не будет отображаться в списке.
 # Она появится в нём только когда туда что-то попадёт. По факту нам даже не нужно создавать эту БД, просто пишем
 # куда мы хотим вставить документ - БД создастся сама собой!
+
+# Протокол HTTP
+# хорошая статья - https://habr.com/ru/post/215117/
+# Протокол предполагает использование клиент-серверной архитектуры
+
+# Сервер - Обслуживающее устройство в системах автоматической обработки информации
+# Клиент - компонент, посылающий запросы серверу
+# Пример клиентских программ: Excel
+# Пример серверных приложений: Excel online, Telegram
+
+# API - Application Programming Interface. Интерфейс и графический интерфейс - не одно и то же.
+# REST -  архитектурный стиль взаимодействия компонентов распределённого приложения в сети.
+
+# REST - Representational State Transfer - передача состояния представления. Требования:
+# 1. Модель клиент-сервер
+# 2. Отсутствие состояния
+# 3. Кэширование
+# 4. Единообразие интерфейса
+# 5. Слои
+# 6. Код по требованию
+
+# Выполнение этих ограничений обязательно для REST-систем. Накладываемые ограничения определяют работу сервера в том,
+# как он может обрабатывать и отвечать на запросы клиентов. Действуя в рамках этих ограничений,
+# система приобретает такие желательные свойства как производительность, масштабируемость, простота, способность
+# к изменениям, переносимость, отслеживаемость и надёжность.
+# Если сервис-приложение нарушает любое из этих ограничительных условий, данную систему нельзя считать REST-системой
