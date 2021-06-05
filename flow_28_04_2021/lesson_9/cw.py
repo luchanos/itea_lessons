@@ -26,6 +26,7 @@ json-файл с именем вида <id записи>.json. Если id не 
 # Джойны в курсе не рассматриваются.
 
 # Пример агрегационного запроса к MongoDB:
+from mongoengine import ValidationError
 
 """
 Model._get_collection().aggregate([
@@ -47,14 +48,20 @@ Model._get_collection().aggregate([
 import mongoengine as me
 from datetime import datetime as dt
 
-me.connect("LESSON_8_DB")  # если такой БД нет, то она будет создана автоматически
+me.connect("LESSON_9_DB")  # если такой БД нет, то она будет создана автоматически
+
+
+def simple_func(s):
+    for el in s:
+        if not ((97 <= ord(el) <= 122) or el in ["", "_"]):
+            raise ValidationError("%s" % (s, ))
 
 
 # нет понятия таблица, вместо неё понятие коллекция
 class UserProfile(me.Document):
     login = me.StringField(required=True, min_length=3, max_length=120, unique=True)
     password = me.StringField(required=True, min_length=2)  # в таком виде хранить пароли не стоит, надо хэшировать
-    about_me = me.StringField()
+    about_me = me.StringField(validation=simple_func)
     likes = me.IntField(default=0)
 
 
@@ -177,7 +184,7 @@ user_data_list = [
     {"first_name": "Chubaka",
      "last_name": "Chubakov",
      "interests": ["barking"],
-     "age": 99
+     "age": 12
      }
 ]
 
@@ -198,11 +205,10 @@ for user_profile_data in zip(user_profiles_list, user_data_list):
 
 
 # вариант комбинированной выборки:
-users = User.objects((me.Q(age__in=[35, 29]) | me.Q(last_name="Chubakov")))
-print(users)
-users = User.objects((me.Q(age=99) & me.Q(last_name="Chubakov")))
-print(users)
-
+# users = User.objects((me.Q(age__in=[35, 29]) | me.Q(last_name="Chubakov")))  # | - or
+# print(users)
+# users = User.objects((me.Q(age=99) & me.Q(last_name="Chubakov")))
+# print(users)
 
 # правило удаления записей, которые соединены с данной записью (правило обратного удаления)
 # user_profile = me.ReferenceField(UserProfile, reverse_delete_rule=me.CASCADE) # каскадное
