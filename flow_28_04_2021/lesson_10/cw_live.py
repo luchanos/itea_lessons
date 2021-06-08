@@ -113,4 +113,5 @@ def search_user_by_id(user_id):
     return f"Результат: {res}"
 
 
-my_app.run(debug=True)
+if __name__ == "__main__":
+    my_app.run(debug=True)
