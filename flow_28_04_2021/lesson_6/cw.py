@@ -118,3 +118,4 @@ VALUES (%s, %s, %s, %s) RETURNING shop_id -- позволяет вернуть �
 """
 SELECT * FROM shops WHERE created_dt BETWEEN '2021-05-11' AND now() - INTERVAL '2 days'
 """
+1 / 0

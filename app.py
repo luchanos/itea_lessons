@@ -29,7 +29,8 @@ def ping():
 @app.route("/main")
 @app.route("/homepage")
 def homepage():
-    return render_template("mainpage.html")
+    return render_template("mainpage.html")  # не забывайте указывать формат файла!!!
+    # return "<h1>Главная страница</h1>"
 
 
 @app.route("/crete_test_data", methods=["POST"])
@@ -40,6 +41,20 @@ def create_test_data_in_mongo():
     return "OK"
 
 
+def notify_registered_user():
+    print("Отправка сообщения в Телеграмм пользователю, который зарегался")
+
+
+def proccess_interests(interests_list):
+    print(f"Логика обработки интересов пользователя {interests_list}")
+
+
+def moderate_interests(interests_list):
+    if "bad interest" in interests_list:
+        pass  # можете подумать над способом исключить элемент из списка
+    return interests_list
+
+
 # для прокидывания информации в теле запроса можно кидать json вида:
 # {"name": "Николай",
 # "surname": "Свиридов",
@@ -47,18 +62,25 @@ def create_test_data_in_mongo():
 @app.route("/create_user", methods=["POST"])
 def create_user():
     """Будем одновременно создаать пользователя с его учетной записью"""
+
+    # работаем сразу с 3мя компонентами:
+    # - веб-фреймворк (Flask)
+    # - БД-библиотека (mongoengine)
+    # - бизнес-логика или бизнес-контекст (это всё, что мы пишем дополнительно)
     if request.method == "POST":
         user_data = json.loads(request.data)
         user_profile = UserProfile(login=user_data["login"],
                                    password=user_data["password"],
-                                   about_me=user_data["about_me"],
-                                   likes=0).save()
-        User(user_profile=user_profile,
-             first_name=user_data["first_name"],
-             last_name=user_data["last_name"],
-             interests=user_data["interests"],
-             age=user_data["age"]).save()
-        return f"Пользователь {json.loads(request.data)} создан!"  # используем json модуль, чтобы получить структуру
+                                   about_me=user_data["about_me"],).save()
+        interests_list = moderate_interests(user_data["interests"])
+        user = User(user_profile=user_profile,
+                    first_name=user_data["first_name"],
+                    last_name=user_data["last_name"],
+                    interests=interests_list,
+                    age=user_data["age"]).save()
+        notify_registered_user()
+        # return f"Пользователь {json.loads(request.data)} создан!"  # используем json модуль, чтобы получить структуру
+        return render_template("create_user.html", user_data=user)
 
 
 @app.route('/search_user_by_id/<string:user_id>')

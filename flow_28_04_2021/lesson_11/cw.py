@@ -13,12 +13,12 @@ import sys
 import os
 
 # Метод path из модуля sys возвращает все пути для поиска модулей Python.
-# print(sys.path)
-# sys.path.append('/Users/nnsviridov/AcademicProjects/itea_lessons/flow_28_04_2021/lesson_11/some_directory')
+print(sys.path)
+sys.path.append('/Users/nnsviridov/AcademicProjects/itea_lessons/flow_28_04_2021/lesson_11/some_directory')
 
 # пайчарм это подсветит, но работать всё равно будет
-# from some_file_1 import my_shiny_func
-# my_shiny_func()
+from some_file_1 import my_shiny_func
+my_shiny_func()
 
 # или можно получить его как base_dir
 # basedir = os.path.abspath(os.path.dirname(__file__))
