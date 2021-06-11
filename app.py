@@ -24,7 +24,6 @@ def ping():
 #     return render_template("mainpage.html")
 
 
-# вариант с наследуемым шаблоном
 @app.route("/")
 @app.route("/main")
 @app.route("/homepage")
@@ -33,7 +32,7 @@ def homepage():
     # return "<h1>Главная страница</h1>"
 
 
-@app.route("/crete_test_data", methods=["POST"])
+@app.route("/create_test_data", methods=["POST"])
 def create_test_data_in_mongo():
     for user_profile_data in zip(user_profiles_list, user_data_list):
         user_profile = UserProfile(**user_profile_data[0]).save()
@@ -95,6 +94,25 @@ def personal_info():
     if token == "TOKEN":
         return "Персональные данные"
     return Response(status=403, response=json.dumps({"error": "Need auth!"}))  # если хотим что-то отдавать обратно
+
+
+# УРОК 12
+# @app.route("/ten_users")
+# def ten_users():
+#     users_list = User.objects.all()[:2]
+#     print(users_list)
+#     return render_template("ten_users.html", users_list=users_list)  # не забывайте указывать формат файла!!!
+
+@app.route("/base")
+def base():
+    return render_template("base.html")  # не забывайте указывать формат файла!!!
+
+
+@app.route("/ten_users")
+def ten_users():
+    users_list = User.objects.all()[:2]
+    print(users_list)
+    return render_template("ten_users_ext.html", users_list=users_list)  # не забывайте указывать формат файла!!!
 
 
 app.run(debug=True)

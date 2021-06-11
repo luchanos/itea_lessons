@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<h1>Мои сотрудники</h1>
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+{% for user in users_list %}
+<li>{{ user }}</li>
+{% endfor %}
+{% endblock %}
