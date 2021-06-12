@@ -9,25 +9,46 @@
 - Получив информацию по каждому пользователю вернуть её в составе json-объекта в ответе.
 """
 
+from time import sleep
+
+
+def one():
+    two()
+    sleep(2)
+
+
+def two():
+    sleep(2)
+
+
+# Синхронность - задачи выполняются друг за другом
+# one()
+# two()
+
+# Асинхронность - когда задачи запускаются и завершаются независимо друг от друга
+
+# Конкурентность - это когда я пишу письмо и периодически переключаюсь на разговор по телефону
+# Параллельность - когда я пишу письмо, а рядом сидит друг, который за меня разговаривает по телефону
+
 # Процесс - программа, которая запущена в оперативной памяти компьютера. Другими словами, процесс - это набор
 # инструкций, которые выполняются последовательно (в общем случае). В реальности всё немного не так просто.
 # характеристики процесса:
 # - PID - идентификатор процесса
 # - Объём оперативной памяти, который занимает процесс
 # - Стек (для вызова функций и переменных)
-# Список открытых файлов
-# Ввод/вывод
+# - Список открытых файлов
+# - Ввод/вывод
 
 # TOP - команда, которая покажетю какие процессы сейчас запущены (запускаем команду в терминале)
 # Кажется, что все процессы работают одновременно, но это не так. На самом деле планировщик выделяет каждому
 # процессу небольшой квант времени, в ходе которого процесс выполняется, а потом происходит переключение.
 
 # ЗАПУСТИМ НАШ ПЕРВЫЙ ПРОЦЕСС
-import time
-import os
-
+# import time
+# import os
+#
 # pid = os.getpid()  # получаем id процесса, в котором запущена программа
-
+#
 # while True:
 #     print(pid, time.time())
 #     time.sleep(2)
@@ -62,7 +83,7 @@ import os
 # else:
 #     # этот код будет исполнен в родительском процессе
 #     print("parent:", os.getpid())
-#     os.wait()  # дожидаемся завершения дочернего процесса
+#     os.wait()  # дожидаемся завершения всех дочерних процессов
 
 # РАБОТА ПАМЯТИ В ПРОЦЕССАХ
 # import os
@@ -74,6 +95,7 @@ import os
 #     foo = "baz"
 #     print("child", foo)
 # else:
+#     sleep(1)
 #     # код будет выполнен в родительском процессе
 #     print("parent:", foo)  # то, что в дочке поменялось значение никак не повлияет на родителя
 #     os.wait()
@@ -111,10 +133,11 @@ import os
 
 
 # Альтернативный способ создания процессов:
-# from multiprocessing import Process
-# num_list = [x for x in range(10)]
-#
-#
+from time import sleep
+from multiprocessing import Process
+num_list = [x for x in range(10)]
+
+
 # class MyShinyProcess(Process):
 #     def __init__(self, name):
 #         super().__init__()
@@ -124,7 +147,7 @@ import os
 #         global num_list
 #         proc_num = num_list.pop()
 #         print("hello", self.name, proc_num)
-#         time.sleep(1)
+#         sleep(1)
 #         if len(num_list) != 0:
 #             p = MyShinyProcess("Mike")
 #             p.start()
@@ -153,7 +176,7 @@ import os
 #
 # def f(name):
 #     print("hello", name)
-
+#
 #
 #
 # th = Thread(target=f, args=("Bob", ))
@@ -180,29 +203,29 @@ import os
 # простое применение - хотим читать файл с общим прогрессом и что-то делать с вычитанными данными
 
 # Пул потоков
-# from concurrent.futures import ThreadPoolExecutor, as_completed
-# from random import randrange
-#
-# b = 0
-#
-#
-# def f(a):
-#     global b
-#     print("This is %d" % b)
-#     b += 1
-#     # sleep_time = randrange(0, 10)
-#     # time.sleep(sleep_time)
-#     sleep_time = 1
-#     time.sleep(sleep_time)
-#     buf = b
-#     return f"result {a * a} for thread {buf} which slept {sleep_time}"
-#
-#
-# with ThreadPoolExecutor(max_workers=50) as pool:  # тут всё само сделается!
-#     results = [pool.submit(f, i) for i in range(10)] # submit - создает футуру, это объект, который обещает исполнится
-#
-#     for future in as_completed(results):
-#         print(future.result())
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from random import randrange
+
+b = 0
+
+
+def f(a):
+    global b
+    print("This is %d" % b)
+    b += 1
+    # sleep_time = randrange(0, 10)
+    # time.sleep(sleep_time)
+    sleep_time = 1
+    sleep(sleep_time)
+    buf = b
+    return f"result {a * a} for thread {buf} which slept {sleep_time}"
+
+
+with ThreadPoolExecutor(max_workers=1) as pool:  # тут всё само сделается!
+    results = [pool.submit(f, i) for i in range(10)]  # submit - создает футуру, это объект, который обещает исполнится
+
+    for future in as_completed(results):
+        print(future.result())
 
 
 # Синхронизация потоков
