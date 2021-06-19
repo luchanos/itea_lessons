@@ -110,9 +110,9 @@ def base():
 
 @app.route("/ten_users")
 def ten_users():
-    users_list = User.objects.all()[:2]
+    users_list = User.objects.all()[:10]
     print(users_list)
-    return render_template("ten_users_ext.html", users_list=users_list)  # не забывайте указывать формат файла!!!
+    return render_template("ten_users_ext.html", title="Это мои сотрудники", users_list=users_list)  # не забывайте указывать формат файла!!!
 
 
 app.run(debug=True)

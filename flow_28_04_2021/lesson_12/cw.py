@@ -134,11 +134,11 @@ def two():
 
 
 # Альтернативный способ создания процессов:
-from time import sleep
-from multiprocessing import Process
-num_list = [x for x in range(10)]
-
-
+# from time import sleep
+# from multiprocessing import Process
+# num_list = [x for x in range(10)]
+#
+#
 # class MyShinyProcess(Process):
 #     def __init__(self, name):
 #         super().__init__()
@@ -172,17 +172,19 @@ num_list = [x for x in range(10)]
 # - управлением потоками руководит ОС
 # - в Python потоки имеют ограничения, связанные с GIL (об этом позже)
 
-# from threading import Thread
-#
-#
-# def f(name):
-#     print("hello", name)
-#
-#
-#
-# th = Thread(target=f, args=("Bob", ))
-# th.start()  # запускаем поток на исполнение
-# th.join()  # дожидаемся выполнения всех созданных потоков
+from threading import Thread
+
+
+def f(name):
+    print("hello", name)
+
+
+th = Thread(target=f, args=("Bob", ))
+th2 = Thread(target=f, args=("Bob", ))
+th.start()  # запускаем поток на исполнение
+th2.start()
+th.join()  # дожидаемся выполнения всех созданных потоков
+th2.join()
 
 # альтернатива:
 # from threading import Thread

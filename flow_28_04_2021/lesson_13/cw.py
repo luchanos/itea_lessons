@@ -1,3 +1,11 @@
+"""
+Сделать шаблоны для отображения сотрудников, заявок и департаментов и прикрутить их к соответствующим flask-методам.
+Используйте 1 базовый шаблон, от которого унаследуйте все остальные. Что хотелось бы видеть:
+ - навигационную панель (можно взять из классной работы или написать свою собственную)
+ - удобный вывод информации (ограничение по количеству записей, выводимых на экран и использование
+ списка с точками или цифрами при выводе)
+"""
+
 from time import sleep
 
 # Пул потоков
@@ -56,42 +64,45 @@ b = 0
 # th1.join()
 # th2.join()
 
-# с точки зрения процесса ресурсами владеет именно процесс. Но процесс не знает, что там творится в потоках.
+# с точки зрения процесса ресурсами владеет именно процесс. Но процесс не знает, что творится в потоках.
 # Если поток завершить аварийно, то могут случиться неприятности (незакрытые файлы и тд).
 # Поэтому в питоне нет функции аварийного завершения потока.
 
 # Блокировки.
-# import threading
-#
-#
-# class Point:
-#     def __init__(self):
-#         self._mutex = threading.RLock()  # запрашиваем блокировку
-#         self._x = 0
-#         self._y = 0
-#
-#     def get(self):
-#         with self._mutex:
-#             return self._x, self._y
-#
-#     def set(self, x, y):
-#         with self._mutex:
-#             self._x = x
-#             self._y = y
+import threading
+
+
+class Point:
+    def __init__(self):
+        self._mutex = threading.RLock()  # запрашиваем блокировку | палка, которой поток, работающий с конкретным
+        # экземпляром точки этого класса будет отгонять другие потоки от неё до тех пор, пока сам не завершит
+        # с ней работу.
+        self._x = 0
+        self._y = 0
+
+    def get(self):
+        with self._mutex:
+            return self._x, self._y
+
+    def set(self, x, y):
+        with self._mutex:
+            self._x = x
+            self._y = y
 
 # Предположим, что используем наш класс в большом количестве потоков
 # Может произойти неконсистентное состояние объекта. Также это "гонка за ресурсами"
 
 # Другой способ
 # import threading
-#
+
 # a = threading.RLock()
 # b = threading.RLock()
-#
-#
+
+
 # def foo():
 #     try:
 #         a.acquire()  # запрашиваем блокировку
+#         print("kek")
 #         b.acquire()
 #     finally:
 #         a.release()  # освобождаем
@@ -104,7 +115,7 @@ b = 0
 
 # GIL
 # Глобальная блокировка интерпретатора
-# Не позволяет двум потокам выполняться одновременно двум потокам. Защищает память от "разрушения".
+# Не позволяет двум потокам выполняться одновременно. Защищает память от "разрушения".
 # from threading import Thread
 # import time
 #
@@ -114,14 +125,14 @@ b = 0
 #         n -= 1
 #
 # t0 = time.time()
-# count(100_00_00)
-# count(100_00_00)
+# count(10_000_000)
+# count(10_000_000)
 # print("Последовательное", time.time() - t0)
-#
-# # параллельное выполнение
+
+# параллельное выполнение
 # t0 = time.time()
-# th1 = Thread(target=count, args=(100_000_000, ))
-# th2 = Thread(target=count, args=(100_000_000, ))
+# th1 = Thread(target=count, args=(10_000_000, ))
+# th2 = Thread(target=count, args=(10_000_000, ))
 #
 # th1.start()
 # th2.start()
@@ -140,13 +151,24 @@ b = 0
 # наша цель - фильтровать входной поток данных при помощи функции grep и дальше мы прокидываем паттерн и выводим только
 # те, в которых присутствует слово python
 
+# Асинхронность - когда задачи запускаются и завершаются независимо друг от друга
+
+# def give_me_value():
+#     print("fwef")
+#     yield 123
+#
+#
+# g_o = give_me_value()
+# print(next(g_o))
+
+
 # сопрограмма (корутина)
-# def grep(pattern):
-#     print("start grep")
-#     while True:
-#         line = yield  # заморозить своё состояние и ожидать ввода данных
-#         if pattern in line:
-#             print(line)
+def grep(pattern):
+    print("start grep")
+    while True:
+        line = yield  # заморозить своё состояние и ожидать ввода данных
+        if pattern in line:
+            print(line)
 
 
 # g = grep("python")
@@ -158,21 +180,21 @@ b = 0
 # отличие корутины от генератора:
 # корутина потребляет значения, а генератор их производит
 
-# def grep(pattern):
-#     print("start grep")
-#     try:
-#         while True:
-#             line = yield  # заморозить своё состояние и ожидать ввода данных
-#             if pattern in line:
-#                 print(line)
-#     except GeneratorExit:
-#         print("stop grep")
+def grep(pattern):
+    print("start grep")
+    try:
+        while True:
+            line = yield  # заморозить своё состояние и ожидать ввода данных
+            if pattern in line:
+                print(line)
+    except GeneratorExit:
+        print("stop grep")
 
 
 # g = grep("python")
 # next(g)
 # g.send("python is the best!")
-# g.close()  # вообще он будет вызван самостоятельно сборщиком мусора, но можно и вызвать самостоятельно
+# g.close()  # вообще он будет вызван самостоятельно сборщиком мусора, но можно и вызвать вручную
 
 
 #  вызов одной корутины внутри другой
@@ -183,8 +205,15 @@ b = 0
 
 # g = grep_python_coroutine()
 # print(g)
-# g.send(None)
+# g.send(None)  # это эквивалент next(g)
 # g.send("python wow!")
+
+# ЧТО ВАЖНО ЗНАТЬ:
+# 1. Если видите в функции yield - значит её результат - это 100% объект-генератор
+# 2. Если yield стоит ведушщим словом в строке, значит вы имеете дело с классическим генератором, который отдает
+# значения по запросу. Если слово yield стоит справа от знака = (равно), то это корутина (сопрограмма) и она будет
+# потреблять значения.
+# 3. На сопрограммах (корутинах) построено все асинхронное взаимодействие внутри Python.
 
 
 # asyncio - библиотека, которая входит в состав стандартной библиотеки python3
@@ -256,21 +285,21 @@ async def handle_echo(reader, writer):  # reader, writer - это обязате
     print(f"received {message} from {addr}")
     writer.close()
 
-loop = asyncio.get_event_loop()
+# loop = asyncio.get_event_loop()
 # в asyncio есть сервер из коробки! нужно лишь сказать, что нужно делать с
 # входящим соединением! на каждое соединение будет самостоятельно создаваться
 # своя корутина на обработку пришедшей информации
-coro = asyncio.start_server(handle_echo, "127.0.0.1", 10001, loop=loop)
-server = loop.run_until_complete(coro)
+# coro = asyncio.start_server(handle_echo, "127.0.0.1", 10001, loop=loop)
+# server = loop.run_until_complete(coro)
 
-try:
-    loop.run_forever()
-except KeyboardInterrupt:
-    pass
-
-server.close()
-loop.run_until_complete(server.wait_closed())
-loop.close()
+# try:
+#     loop.run_forever()
+# except KeyboardInterrupt:
+#     pass
+#
+# server.close()
+# loop.run_until_complete(server.wait_closed())
+# loop.close()
 
 
 # import asyncio
