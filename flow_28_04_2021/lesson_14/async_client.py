@@ -5,7 +5,7 @@ from asyncio import sleep
 async def tcp_echo_client(message, loop):
     await sleep(1)
     reader, writer = await asyncio.open_connection("127.0.0.1", 10001, loop=loop)
-    print(f"send {message}")
+    print(f"send from async client: {message}")
     writer.write(message.encode())
     writer.close()
 

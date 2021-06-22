@@ -2,6 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, request, render_template
 import json
 
+# pip install Flask-SQLAlchemy==2.5.1
+
 DB_URL = 'postgresql://postgres:dbpass@127.0.0.1:5432/postgres'
 
 app = Flask(__name__)
@@ -28,6 +30,7 @@ class Users(db.Model):
     age = db.Column(db.Integer)
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.profile_id'))  # указание внешнего ключа
 
+# после написания моделей, открываем консольку Python для нашего проекта
 
 @app.route("/create_user", methods=["POST"])
 def create_user():
