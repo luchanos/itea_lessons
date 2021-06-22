@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Response
 import json
 from logging import getLogger
 
@@ -71,16 +71,17 @@ def create_notification_task():
     if request.method == 'POST':
         data = json.loads(request.data)
         profile_id = data['user_id']
-        profile = Profiles.objects.get(profile_id=profile_id)
+        profile = Profiles.query.get(profile_id)
         if profile.is_subscribed:
             message = data['message']
             notification_task = NotificationTasks(message=message,
                                                   profile_tg_chat_id=profile.profile_tg_chat_id)
             db.session.add(notification_task)
-            db.session.flush()
             db.session.commit()
         else:
+            print(f"Profile with id {profile.profile_id} is not subscripted!")
             logger.info(f"Profile with id {profile.profile_id} is not subscripted!")
+    return Response("OK")
 
 
 if __name__ == '__main__':
