@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, request, render_template
 import json
+from logging import getLogger
 
 # pip install Flask-SQLAlchemy==2.5.1
 
@@ -13,6 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL  # определит тип БД
 
 # подключили алхимию к нашему приложению
 db = SQLAlchemy(app)
+logger = getLogger(__name__)
 
 
 class Profiles(db.Model):
@@ -20,6 +22,9 @@ class Profiles(db.Model):
     login = db.Column(db.String(30), unique=True)
     password = db.Column(db.String(50))
     about_me = db.Column(db.String(100))
+    is_subscribed = db.Column(db.Boolean, default=False)
+    profile_tg_chat_id = db.Column(db.String(10), nullable=True)  # тут будем хранить id чата в Телеге для оповещения
+    # пользователя о чём-либо
 
 
 class Users(db.Model):
@@ -30,8 +35,16 @@ class Users(db.Model):
     age = db.Column(db.Integer)
     profile_id = db.Column(db.Integer, db.ForeignKey('profiles.profile_id'))  # указание внешнего ключа
 
-# после написания моделей, открываем консольку Python для нашего проекта
 
+class NotificationTasks(db.Model):
+    notification_task_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    message = db.Column(db.String(100)) # сюда будем писать сообщения для отправки
+    status = db.Column(db.String(10), default=None)
+    profile_tg_chat_id = db.Column(db.String(10), nullable=True)  # не делал Foreign Key, вдруг chat id изменится
+
+
+# после написания моделей, открываем консольку Python для нашего проекта
+# импортируем туда db -> db.create_all() - создадутся базы
 @app.route("/create_user", methods=["POST"])
 def create_user():
     """Будем одновременно создаать пользователя с его учетной записью"""
@@ -51,6 +64,23 @@ def create_user():
         db.session.flush()
         db.session.commit()  # коммитим наши изменения
         return render_template("create_user.html", user_data=user_data)
+
+
+@app.route("/register_notification_task", methods=["POST"])
+def create_notification_task():
+    if request.method == 'POST':
+        data = json.loads(request.data)
+        profile_id = data['user_id']
+        profile = Profiles.objects.get(profile_id=profile_id)
+        if profile.is_subscribed:
+            message = data['message']
+            notification_task = NotificationTasks(message=message,
+                                                  profile_tg_chat_id=profile.profile_tg_chat_id)
+            db.session.add(notification_task)
+            db.session.flush()
+            db.session.commit()
+        else:
+            logger.info(f"Profile with id {profile.profile_id} is not subscripted!")
 
 
 if __name__ == '__main__':
