@@ -11,21 +11,32 @@
 # пусть при создании
 from telebot import TeleBot
 from envparse import Env
+from logging import getLogger
 
-from app_2 import db
+from app_2 import db, Profiles
 
 env = Env()
+logger = getLogger(__name__)
 
 TOKEN = env.str("TOKEN")
 
 bot = TeleBot(TOKEN)
 
 
+def subscribe_profile(message):
+    """Подписываем пользака на уведомления"""
+    profile = Profiles.query.get(int(message.text))
+    profile.is_subscribed = True
+    profile.profile_tg_chat_id = message.chat.id
+    db.session.commit()
+
+
 @bot.message_handler(commands=['subscribe'])
 def subscribe_user(message):
-    c = 1
-    print("Запрос на подписку")
-    bot.send_message(chat_id=message.chat.id, text="ахахахахаха")
+    """Обрабатываем запрос на подписку"""
+    logger.info("Запрос на подписку")
+    bot.reply_to(message, "Введите id своего профиля:")
+    bot.register_next_step_handler(message, subscribe_profile)
 
 
 bot.polling()
