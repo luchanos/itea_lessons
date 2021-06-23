@@ -20,6 +20,7 @@ d['expiry_date'] = '2021-01-07'
 import mongoengine as me
 from datetime import datetime as dt
 import json
+from datetime import datetime
 
 # если в базе пока ничего не лежит, то и в интерфейсе она не будет отображаться
 me.connect("LESSON_9_DB")  # если такой БД нет, то она будет создана автоматически
@@ -32,6 +33,7 @@ class UserProfile(me.Document):
     likes = me.IntField(default=0)
     about_me = me.StringField()
     created_at = me.DateTimeField()
+    updated_at = me.DateTimeField(default=None)
 
     def __str__(self):
         return f"login: {self.login} | password: {self.password}"
@@ -42,6 +44,9 @@ class UserProfile(me.Document):
     def save(self, *args, **kwargs):
         self.created_at = dt.now()
         return super().save(*args, **kwargs)
+
+    def update(self, **kwargs):
+        return super().update(**kwargs, updated_at=dt.now())
 
 
 class User(me.Document):
@@ -56,7 +61,7 @@ class User(me.Document):
 
 
 
-# first_profile = UserProfile(login='Chupakabra', password='12345')
+# first_profile = UserProfile(login='Chupakabra222', password='12345')
 # first_profile.save()
 # first_profile = UserProfile(login='Kamikadze', password='123456')
 # first_profile.save()  # осуществляет запись в базу
@@ -73,7 +78,9 @@ class User(me.Document):
 #     dict_data = json.loads(item.to_json())
 #     print(dict_data, type(dict_data))
 
-# res = UserProfile.objects.get(pk="60b7bfa8a057a4ee4bc6ad40")
+res = UserProfile.objects.get(pk="60d33e7f154989a59d26414e")
+res.update(password='aaa')
+print(res)
 # print(UserProfile.objects(login="Nikolai"))
 
 # User(name="Nikolai", surname="Sviridov", interests=["programming", "teaching", "blogging", "mma"]).save()
@@ -121,16 +128,16 @@ user_data_list = [
      }
 ]
 
-UserProfile.objects.all().delete()
-User.objects.all().delete()
+# UserProfile.objects.all().delete()
+# User.objects.all().delete()
 
 # записываем тестовые данные в БД
-for user_profile_data in zip(user_profiles_list, user_data_list):
-    print(user_profile_data)
-    from time import sleep
-    sleep(.5)
-    user_profile = UserProfile(**user_profile_data[0]).save()
-    user = User(user_profile=user_profile, **user_profile_data[1]).save()
+# for user_profile_data in zip(user_profiles_list, user_data_list):
+#     print(user_profile_data)
+#     from time import sleep
+#     sleep(.5)
+#     user_profile = UserProfile(**user_profile_data[0]).save()
+#     user = User(user_profile=user_profile, **user_profile_data[1]).save()
 
 
 # user = User.objects.get(id='60b7d16f388a6b576e68ef22')
@@ -169,3 +176,4 @@ def some_func(a, b, c, **kwargs):
 # gte - больше или равно
 # in - проверка на вхождение
 # nin - проверка на невхождение
+c = 1
