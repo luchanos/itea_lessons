@@ -102,7 +102,7 @@ if __name__ == '__main__':
     # в терминале пишем:
     # python app_2.py db init - инициализация alembic в составе flask_migrate
     # python app_2.py db migrate - создание миграций
-    # python app_2.py db upgrade - накатыван е миграций
+    # python app_2.py db upgrade - накатывание миграций
 
-    # и для прокатывания миграций раскомментить вот эту строчку
+    # и дальше для прокатывания миграций раскомментить вот эту строчку
     # manager.run()
