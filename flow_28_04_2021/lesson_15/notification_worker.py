@@ -8,7 +8,7 @@ from time import sleep
 
 env = Env()
 
-TOKEN = env.str("TOKEN")
+TOKEN = "1818338603:AAEv3AOttf2NqRSSphapItXr-ADv3sbL0tM"
 BASE_URL = 'https://api.telegram.org'
 CHAT_ID = 362857450
 
@@ -22,6 +22,7 @@ def notify_users():
         db.session.commit()
 
 
-while True:
-    notify_users()
-    sleep(60)
+if __name__ == "__main__":
+    while True:
+        notify_users()
+        sleep(60)

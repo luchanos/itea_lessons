@@ -49,7 +49,7 @@ class Users(db.Model):
 
 class NotificationTasks(db.Model):
     notification_task_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    message = db.Column(db.String(100)) # сюда будем писать сообщения для отправки
+    message = db.Column(db.String(100))  # сюда будем писать сообщения для отправки
     status = db.Column(db.String(10), default=None)
     profile_tg_chat_id = db.Column(db.String(10), nullable=True)  # не делал Foreign Key, вдруг chat id изменится
 

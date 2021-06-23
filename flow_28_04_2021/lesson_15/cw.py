@@ -9,7 +9,7 @@
 # ещё у Телеграмм есть сырая API, можно использовать её и писать свои клиенты для взаимодействия с ним.
 
 # пусть при создании
-from telebot import TeleBot
+from telebot import TeleBot  # pip install pyTelegramBotAPI
 from envparse import Env
 from logging import getLogger
 from app_2 import db, Profiles

@@ -46,7 +46,8 @@ class UserProfile(me.Document):
         return super().save(*args, **kwargs)
 
     def update(self, **kwargs):
-        return super().update(**kwargs, updated_at=dt.now())
+        self.updated_at = dt.now()
+        return super().update(**kwargs, updated_at=self.updated_at)
 
 
 class User(me.Document):
