@@ -5,6 +5,12 @@ from logging import getLogger
 
 # pip install Flask-SQLAlchemy==2.5.1
 
+# для миграций:
+# pip install flask-migrate==2.5.0 (я ставил старую версию, в новой синтаксис другой)
+# pip install flask-script
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
+
 DB_URL = 'postgresql://postgres:dbpass@127.0.0.1:5432/postgres'
 
 app = Flask(__name__)
@@ -14,6 +20,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL  # определит тип БД
 
 # подключили алхимию к нашему приложению
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+manager = Manager(app)
+
+manager.add_command('db', MigrateCommand)
+
 logger = getLogger(__name__)
 
 
@@ -86,3 +97,12 @@ def create_notification_task():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+    # для миграций
+    # в терминале пишем:
+    # python app_2.py db init - инициализация alembic в составе flask_migrate
+    # python app_2.py db migrate - создание миграций
+    # python app_2.py db upgrade - накатыван е миграций
+
+    # и для прокатывания миграций раскомментить вот эту строчку
+    # manager.run()
