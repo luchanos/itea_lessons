@@ -17,7 +17,8 @@ def notify_users():
     # ламповый воркер для отправки уведомлений
     notifications = NotificationTasks.query.filter_by(status=None).all()
     for notification in notifications:
-        requests.post(f"{BASE_URL}/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&parse_mode=Markdown&text={notification.message}")
+        url = f"{BASE_URL}/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&parse_mode=Markdown&text={notification.message}"
+        requests.post(url)
         notification.status = "done"
         db.session.commit()
 
