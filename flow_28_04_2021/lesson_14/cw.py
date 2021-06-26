@@ -154,29 +154,3 @@ async def handle_echo(reader, writer):  # reader, writer - это обязате
 
 # работа с SQLAlchemy
 # SQLAlchemy позволяет настроить модели таким образом, чтобы не привязываться к конкретной БД - см. файл app_2
-
-# Deque, Queue, Stack
-# классические коллекции.
-
-# Stack - стек, первым вошёл - последним обслужен
-l = []
-l.append(1)
-l.append(2)
-l.append(3)
-
-l.pop()
-l.pop()
-l.pop()
-
-# Queue - очередь, первым вошёл - первым обслужен
-l = []
-l.append(1)
-l.append(2)
-l.append(3)
-
-l.pop(0)
-l.pop(0)
-l.pop(0)
-
-# Deque - двусторонняя очередь - по сути совмещает в себе поведение Stack и Queue
-# подробнее можно прочитать в книге Грокаем алгоритмы)
