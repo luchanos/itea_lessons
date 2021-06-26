@@ -9,6 +9,16 @@ services:
             - "5432:5432"
         networks:
             - custom
+    rabbitMQ:
+        image: rabbitmq:3.8-rc-management
+        environment:
+            - RABBITMQ_DEFAULT_PASS=rmqpass
+            - RABBITMQ_DEFAULT_USER=rmquser
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        networks:
+            - custom
 networks:
     custom:
         driver: bridge
