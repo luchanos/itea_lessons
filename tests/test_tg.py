@@ -6,15 +6,15 @@ import responses
 from flow_28_04_2021.lesson_16.notification_worker import notify_users
 
 
-@pytest.fixture()
-def cleaner():
-    conn = psycopg2.connect("postgres://postgres:dbpass@0.0.0.0:5432/postgres")
-    with conn:
-        cursor = conn.cursor()
-        with cursor:
-            cursor.execute("""DELETE FROM users WHERE user_id > 0""")
-            cursor.execute("""DELETE FROM profiles WHERE profile_id > 0""")
-            cursor.execute("""TRUNCATE TABLE notification_tasks""")
+# @pytest.fixture()
+# def cleaner():
+#     conn = psycopg2.connect("postgres://postgres:dbpass@0.0.0.0:5432/postgres")
+#     with conn:
+#         cursor = conn.cursor()
+#         with cursor:
+#             cursor.execute("""DELETE FROM users WHERE user_id > 0""")
+#             cursor.execute("""DELETE FROM profiles WHERE profile_id > 0""")
+#             cursor.execute("""TRUNCATE TABLE notification_tasks""")
 
 
 def test_create_user(cleaner):

@@ -75,46 +75,48 @@ def create_user():
         db.session.flush()
         db.session.commit()  # коммитим наши изменения
         return render_template("create_user.html", user_data=user_data)
+    elif request.method == "GET":
+        return Response("Ничего не найдено", status=404)
 
 
-# @app.route("/register_notification_task", methods=["POST"])
-# def create_notification_task():
-#     if request.method == 'POST':
-#         data = json.loads(request.data)
-#         profile_id = data['user_id']
-#         profile = Profiles.query.get(profile_id)
-#         if profile.is_subscribed:
-#             message = data['message']
-#             notification_task = NotificationTasks(message=message,
-#                                                   profile_tg_chat_id=profile.profile_tg_chat_id)
-#             db.session.add(notification_task)
-#             db.session.commit()
-#         else:
-#             print(f"Profile with id {profile.profile_id} is not subscripted!")
-#             logger.info(f"Profile with id {profile.profile_id} is not subscripted!")
-#     return Response("OK")
-
-def create_notification_task_func(data):
-    profile_id = data['profile_id']
-    profile = Profiles.query.get(profile_id)
-    if profile.is_subscribed:
-        message = data['message']
-        notification_task = NotificationTasks(message=message,
-                                              profile_tg_chat_id=profile.profile_tg_chat_id)
-        db.session.add(notification_task)
-        db.session.commit()
-    else:
-        print(f"Profile with id {profile.profile_id} is not subscripted!")
-        logger.info(f"Profile with id {profile.profile_id} is not subscripted!")
-
-
-# новая ручка для создания нотификаций:
 @app.route("/register_notification_task", methods=["POST"])
 def create_notification_task():
-    data = json.loads(request.data)
     if request.method == 'POST':
-        create_notification_task(data)
+        data = json.loads(request.data)
+        profile_id = data['profile_id']
+        profile = Profiles.query.get(profile_id)
+        if profile.is_subscribed:
+            message = data['message']
+            notification_task = NotificationTasks(message=message,
+                                                  profile_tg_chat_id=profile.profile_tg_chat_id)
+            db.session.add(notification_task)
+            db.session.commit()
+        else:
+            print(f"Profile with id {profile.profile_id} is not subscripted!")
+            logger.info(f"Profile with id {profile.profile_id} is not subscripted!")
     return Response("OK")
+
+# def create_notification_task_func(data):
+#     profile_id = data['profile_id']
+#     profile = Profiles.query.get(profile_id)
+#     if profile.is_subscribed:
+#         message = data['message']
+#         notification_task = NotificationTasks(message=message,
+#                                               profile_tg_chat_id=profile.profile_tg_chat_id)
+#         db.session.add(notification_task)
+#         db.session.commit()
+#     else:
+#         print(f"Profile with id {profile.profile_id} is not subscripted!")
+#         logger.info(f"Profile with id {profile.profile_id} is not subscripted!")
+#
+#
+# # новая ручка для создания нотификаций:
+# @app.route("/register_notification_task", methods=["POST"])
+# def create_notification_task():
+#     data = json.loads(request.data)
+#     if request.method == 'POST':
+#         create_notification_task(data)
+#     return Response("OK")
 
 
 if __name__ == '__main__':
