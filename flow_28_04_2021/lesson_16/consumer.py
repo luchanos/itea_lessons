@@ -6,7 +6,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
                'localhost', credentials=PlainCredentials("rmquser", "rmqpass")))
 channel = connection.channel()
 
-channel.queue_declare(queue='hello')
+channel.queue_declare(queue='test_queue', durable=True)
 
 print(' [*] Waiting for messages. To exit press CTRL+C')
 
@@ -14,11 +14,12 @@ print(' [*] Waiting for messages. To exit press CTRL+C')
 def callback(ch, method, properties, body):
     if int(body.decode()) % 2 != 0:
         ch.basic_ack(delivery_tag=method.delivery_tag)
-        print(" [x] Received %r" % (body,))
+    print(" [x] Received %r" % (body,))
 
 
+# создаём базовый консумер (консумер = потребитель сообщений)
 channel.basic_consume(on_message_callback=callback,
-                      queue='hello',
+                      queue='test_queue',
                       auto_ack=False)
 
 channel.start_consuming()

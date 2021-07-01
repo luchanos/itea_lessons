@@ -1,4 +1,7 @@
 from app_2 import app, Users, Profiles
+import responses
+
+from tests.utils import test_page
 
 
 def test_create_user():
@@ -32,3 +35,12 @@ def test_create_user():
     assert test_user.last_name == user_data["last_name"]
     assert test_user.interests == user_data["interests"]
     assert test_user.age == user_data["age"]
+
+
+@responses.activate
+def test_outer_request():
+    test_client = app.test_client()
+    responses.add(responses.GET, "http://google.com",
+                  body=test_page, status=200)
+    resp = test_client.get('/test_bp')
+    assert resp.data == b'\nOK\n'

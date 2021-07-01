@@ -10,7 +10,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
                'localhost', credentials=PlainCredentials("rmquser", "rmqpass")))
 channel = connection.channel()
 
-channel.queue_declare(queue='notification_tasks')
+# channel.queue_declare(queue='test_queue')
 
 print(' [*] Waiting for notification tasks. To exit press CTRL+C')
 
@@ -35,7 +35,7 @@ def callback(ch, method, properties, body):
 
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(on_message_callback=callback,
-                      queue='notification_tasks',
+                      queue='test_queue',
                       auto_ack=False)
 
 channel.start_consuming()
