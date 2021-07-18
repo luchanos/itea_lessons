@@ -6,7 +6,7 @@
 ранее сумме и после этого завершить программу.
 """
 
-Домашнее задание 4.
+Домашнее задание 4.'''
 
 def sum_int(string):
     '''Function return summa of numbers of introduced string
