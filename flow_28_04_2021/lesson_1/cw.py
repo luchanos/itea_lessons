@@ -204,13 +204,13 @@
 # print(d)
 
 # функция в зависимости от направления движения вернёт какое-то из значений события
-# def bogatyr_choice(direction="left"):
-#     if direction == "left":
-#         return "Horse loss!"
-#     elif direction == "right":
-#         return "Mind loss!"
-#     elif direction == "straight":
-#         return "Life loss!"
+def bogatyr_choice(direction="left"):
+    if direction == "left":
+        return "Horse loss!"
+    elif direction == "right":
+        return "Mind loss!"
+    elif direction == "straight":
+        return "Life loss!"
 
 # print(bogatyr_choice())
 
