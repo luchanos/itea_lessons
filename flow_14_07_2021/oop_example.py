@@ -72,7 +72,7 @@ class SellDaemon:
         self.context_mapper = context_mapper
 
     def __call__(self, *args, **kwargs):
-        user_choice = input("Какой билет вам нужен? ")
+        user_choice = input("Какой товар вам нужен? ")
         context = self.context_mapper[user_choice]()
         context()
 
