@@ -19,7 +19,12 @@ class DbClient:
             cursor.execute(self.BOOK_SELECT_QUERY)
             return list(cursor)
 
-    def insert_book(self, book_name: str, author: str, genre: str, sheets_cnt: int):
+    def insert_book(self, **kwargs):
+        book_name = kwargs["book_name"]
+        author = kwargs["author"]
+        genre = kwargs["genre"]
+        sheets_cnt = kwargs["sheets_cnt"]
+
         with self.connect.cursor() as cursor:
             cursor.execute(self.BOOK_INSERT_QUERY % (book_name, author, genre, sheets_cnt))
             self.connect.commit()
@@ -32,3 +37,19 @@ class DbClient:
     def close(self):
         self.connect.close()
         self.connect = None
+
+
+class DbClientV2(DbClient):
+    BOOK_INSERT_QUERY = """INSERT INTO books (book_name, author, genre, sheets_cnt, added_by)
+                 VALUES ('%s', '%s', '%s', %d, '%s')"""
+
+    def insert_book(self, **kwargs):
+        book_name = kwargs["book_name"]
+        author = kwargs["author"]
+        genre = kwargs["genre"]
+        sheets_cnt = kwargs["sheets_cnt"]
+        added_by = kwargs["added_by"]
+
+        with self.connect.cursor() as cursor:
+            cursor.execute(self.BOOK_INSERT_QUERY % (book_name, author, genre, sheets_cnt, added_by))
+            self.connect.commit()
