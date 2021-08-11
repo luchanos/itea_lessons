@@ -47,7 +47,7 @@ class DbClientV2(DbClient):
         book_name = kwargs["book_name"]
         author = kwargs["author"]
         genre = kwargs["genre"]
-        sheets_cnt = kwargs["sheets_cnt"]
+        sheets_cnt = int(kwargs["sheets_cnt"])
         added_by = kwargs["added_by"]
 
         with self.connect.cursor() as cursor:
