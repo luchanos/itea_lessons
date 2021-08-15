@@ -27,7 +27,7 @@ async def make_request():
     current = cnt
     print(f"Делаю запрос {current} на внешний сервис!")
     cnt += 1
-    asyncio.ensure_future(asyncio.sleep(15), loop=loop)
+    await asyncio.sleep(1)
     print(current, "поспал и работу закончил!")
 
 
@@ -39,6 +39,7 @@ async def make_request():
 async def main():
     tasks = [asyncio.create_task(make_request()) for _ in range(100)]
     res = asyncio.gather(*tasks)
+    await res
     a = 1
 
 
