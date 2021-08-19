@@ -35,19 +35,19 @@ my_oboyma = dyadechka()  # попросил дать мне обойму
 marian_ob = dyadechka()
 # print(my_oboyma)
 
-# print(next(my_oboyma))  # я осуществляю выстрел!
-# print("Коля пошел поесть")
-# print(next(my_oboyma))  # я осуществляю выстрел!
-# print("Коля пошел покурить")
-# print(next(marian_ob))
-# print(next(my_oboyma))  # я осуществляю выстрел!
-# print("Коля пошел в магазин")
-# print(next(marian_ob))
-# print(next(my_oboyma))  # я осуществляю выстрел!
-# print("Коля пошел поговорить по телефону")
-# print(next(my_oboyma))  # я осуществляю выстрел!
-# print("Коля стрельбу завершил")
-# print(next(my_oboyma))  # я осуществляю выстрел!
+print(next(my_oboyma))  # я осуществляю выстрел!
+print("Коля пошел поесть")
+print(next(my_oboyma))  # я осуществляю выстрел!
+print("Коля пошел покурить")
+print(next(marian_ob))
+print(next(my_oboyma))  # я осуществляю выстрел!
+print("Коля пошел в магазин")
+print(next(marian_ob))
+print(next(my_oboyma))  # я осуществляю выстрел!
+print("Коля пошел поговорить по телефону")
+print(next(my_oboyma))  # я осуществляю выстрел!
+print("Коля стрельбу завершил")
+print(next(my_oboyma))  # я осуществляю выстрел!
 
 
 

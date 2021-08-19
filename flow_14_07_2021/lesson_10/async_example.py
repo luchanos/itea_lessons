@@ -1,21 +1,20 @@
-# # синхронный код
-# from time import sleep
-#
+# синхронный код
+from time import sleep
+
 # cnt = 0
-#
-#
+
 # def make_request():
 #     global cnt
 #     print(f"Делаю запрос {cnt} на внешний сервис!")
 #     cnt += 1
-#     sleep(.5)
-#
-#
+#     sleep(.1)
+
+
 # for _ in range(100):
 #     make_request()
 
 
-from time import sleep
+# from time import sleep
 import asyncio
 
 cnt = 0
@@ -44,5 +43,5 @@ async def main():
 
 
 # cor = make_request()
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+# loop = asyncio.get_event_loop()
+# loop.run_until_complete(main())
