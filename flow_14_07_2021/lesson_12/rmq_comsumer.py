@@ -19,6 +19,7 @@ def callback(ch, method, properties, body):
 # создаём базовый консумер (консумер = потребитель сообщений)
 channel.basic_consume(on_message_callback=callback,
                       queue='test_queue',
-                      auto_ack=False)
+                      auto_ack=False,
+                      consumer_tag="my_shiny_consumer")
 
 channel.start_consuming()
