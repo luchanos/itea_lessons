@@ -1,9 +1,10 @@
 import pika
+import time
 
-from pika import PlainCredentials
+from pika import PlainCredentials, ConnectionParameters, BlockingConnection
 
 # это просто синтаксис для создания подключения к Кролику
-connection = pika.BlockingConnection(pika.ConnectionParameters(
+connection = BlockingConnection(ConnectionParameters(
                'localhost', credentials=PlainCredentials("rmquser", "rmqpass")))
 
 # создаём канал для передачи данных
@@ -19,5 +20,6 @@ for num in range(100):
                           routing_key='test_queue',
                           body=f'{num}'.encode())
     print(f" [x] Sent '{num}'")
+    time.sleep(.5)
 
 connection.close()

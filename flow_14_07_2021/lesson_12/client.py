@@ -7,7 +7,7 @@ class Client:
         self.port = port
         self.timeout = timeout
 
-    def send(self, message):
+    def _send(self, message):
         with socket.create_connection((self.host, self.port), self.timeout) as sock:
             try:
                 sock.sendall(message.encode("utf8"))
@@ -18,9 +18,13 @@ class Client:
             except socket.error as ex:
                 print("send data error:", ex)
 
+    def __call__(self, message):
+        self._send(message)
+        print("Отправка метрики в БД. Событие: использован метод _send.")
+
 
 client = Client("127.0.0.1", 5000, timeout=15)
 user_answer = ""
 while user_answer != "q":
     user_answer = input("Введите данные для отправки: ")
-    client.send(user_answer)
+    client(user_answer)
