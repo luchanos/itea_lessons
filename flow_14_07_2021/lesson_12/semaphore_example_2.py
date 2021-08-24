@@ -3,6 +3,7 @@ import time
 
 import aiohttp
 
+
 async def main_action():
     async with aiohttp.ClientSession() as session:
         async with session.get("http://0.0.0.0:8082") as response:
