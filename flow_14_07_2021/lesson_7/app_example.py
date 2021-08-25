@@ -91,7 +91,8 @@ class MyApplication:
                 print("Вы ввели что-то не то, попробуйте ещё раз! ")
 
 
-my_tg_client = MyTgClient(TOKEN, [362857450, 308251648])
-my_db_client = MyDbClient(DB_URL)
-my_application = MyApplication(db_client=my_db_client, tg_client=my_tg_client)
-my_application.run()
+if __name__ == "__main__":
+    my_tg_client = MyTgClient(TOKEN, [362857450, 308251648])
+    my_db_client = MyDbClient(DB_URL)
+    my_application = MyApplication(db_client=my_db_client, tg_client=my_tg_client)
+    my_application.run()
