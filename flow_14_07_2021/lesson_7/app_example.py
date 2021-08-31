@@ -4,8 +4,8 @@ from envparse import Env
 
 env = Env()
 
-DB_URL = env.str("DB_URL")
-TOKEN = env.str("TOKEN")
+# DB_URL = env.str("DB_URL")
+# TOKEN = env.str("TOKEN")
 
 
 class MyDbClient:
@@ -25,14 +25,14 @@ class MyDbClient:
             print("Connection has not been set up! Please, user client.setup method to install connection!")
             return
 
-    def get_products(self, limit):
+    def get_products(self, limit: int) -> list:
         """Получает заданное количество записей из таблица products"""
         self._check_connection()
         with self.connect.cursor() as cursor:
             cursor.execute(self.PRODUCT_SELECT_QUERY % limit)
             return cursor.fetchall()
 
-    def insert_new_product(self, description, quantity):
+    def insert_new_product(self, description, quantity, *args, **kwargs):
         """Создаёт новый продукт в таблице products"""
         self._check_connection()
         with self.connect.cursor() as cursor:

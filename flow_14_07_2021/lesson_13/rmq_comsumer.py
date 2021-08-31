@@ -70,6 +70,7 @@ def choose_context(ch, method, properties, body):
     except:
         print("Ошибка!")
 
+
 # создаём базовый консумер (консумер = потребитель сообщений)
 channel.basic_consume(on_message_callback=choose_context,
                       queue='test_queue',
