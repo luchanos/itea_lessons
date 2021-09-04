@@ -1,3 +1,6 @@
+# brew services start mongodb-community@5.0
+# brew services stop mongodb-community@5.0
+
 from flask import Flask, request
 from datetime import datetime
 import mongoengine as me
