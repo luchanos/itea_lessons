@@ -35,6 +35,11 @@ async def hello_world(request):
     return text("Hello, world.")
 
 
+@app.get("/my_params/<param_1>")
+async def hello_world(request, param_1):
+    return text(f"{param_1}")
+
+
 @app.get("/write_to_file")
 async def write_to_file(request):
     with open("testfile.txt", "a") as f_o:
