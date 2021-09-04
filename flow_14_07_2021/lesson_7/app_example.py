@@ -13,6 +13,14 @@ class MyDbClient:
     PRODUCT_INSERT_QUERY = "INSERT INTO products (description, quantity) VALUES ('%s', %d)"
     PRODUCT_DELETE_BY_ID_QUERY = "DELETE FROM products WHERE product_id = %d"
 
+    SUBSCRIBE_USER = "INSERT INTO users_subs (username, chat_id, is_subs_active) VALUES ('%s', %d, true)"
+    UNSUBSCRIBE_USER = "UPDATE users_subs SET is_subs_active = false WHERE chat_id = %d"
+    GET_SUBSCRIBED_USERS_QUERY = "SELECT * FROM users_subs WHERE is_subs_active is true"
+
+    GET_NOTIFICATIONS_TASKS_QUERY = "SELECT chat_id, message, notification_task_id  " \
+                                    "FROM notification_tasks WHERE success is NULL"
+    MARK_NOTIFICATION_TASK_RESULT_QUERY = "UPDATE notification_tasks SET success = %s WHERE notification_task_id = %d"
+
     def __init__(self, db_url):
         self.db_url = db_url
         self.connect = None
@@ -46,15 +54,43 @@ class MyDbClient:
             cursor.execute(self.PRODUCT_DELETE_BY_ID_QUERY % product_id)
             self.connect.commit()
 
+    def subscribe_user_notifications(self, chat_id, username):
+        self._check_connection()
+        with self.connect.cursor() as cursor:
+            cursor.execute(self.SUBSCRIBE_USER % (username, chat_id))
+            self.connect.commit()
+
+    def unsubscribe_user_notifications(self, chat_id, username):
+        self._check_connection()
+        with self.connect.cursor() as cursor:
+            cursor.execute(self.UNSUBSCRIBE_USER % chat_id)
+            self.connect.commit()
+
+    def get_subcribed_users(self):
+        self._check_connection()
+        with self.connect.cursor() as cursor:
+            cursor.execute(self.GET_SUBSCRIBED_USERS_QUERY)
+            return cursor.fetchall()
+
+    def get_notification_tasks(self):
+        self._check_connection()
+        with self.connect.cursor() as cursor:
+            cursor.execute(self.GET_NOTIFICATIONS_TASKS_QUERY)
+            return cursor.fetchall()
+
+    def mark_notification_task_result(self, result: bool, notification_task_id: int):
+        self._check_connection()
+        with self.connect.cursor() as cursor:
+            cursor.execute(self.MARK_NOTIFICATION_TASK_RESULT_QUERY % (result, notification_task_id))
+            self.connect.commit()
+
 
 class MyTgClient:
-    def __init__(self, token, chat_ids):
+    def __init__(self, token):
         self.token = token
-        self.chat_ids = chat_ids
 
-    def send_text_message(self, message):
-        for chat_id in self.chat_ids:
-            requests.get(f"https://api.telegram.org/bot{self.token}/sendMessage?chat_id={chat_id}&text={message}")
+    def send_text_message(self, message, chat_id):
+        requests.get(f"https://api.telegram.org/bot{self.token}/sendMessage?chat_id={chat_id}&text={message}")
 
 
 class MyApplication:
@@ -91,8 +127,8 @@ class MyApplication:
                 print("Вы ввели что-то не то, попробуйте ещё раз! ")
 
 
-if __name__ == "__main__":
-    my_tg_client = MyTgClient(TOKEN, [362857450, 308251648])
-    my_db_client = MyDbClient(DB_URL)
-    my_application = MyApplication(db_client=my_db_client, tg_client=my_tg_client)
-    my_application.run()
+# if __name__ == "__main__":
+#     my_tg_client = MyTgClient(TOKEN, [362857450, 308251648])
+#     my_db_client = MyDbClient(DB_URL)
+#     my_application = MyApplication(db_client=my_db_client, tg_client=my_tg_client)
+#     my_application.run()

@@ -9,8 +9,10 @@ num = 0
 
 class MyAsyncDbClient:
     PRODUCT_SELECT_QUERY = "SELECT * FROM products LIMIT $1"
+    PRODUCT_BY_ID_SELECT_QUERY = "SELECT * FROM products WHERE product_id = $1"
     PRODUCT_INSERT_QUERY = "INSERT INTO products (description, quantity) VALUES ($1, $2)"
     PRODUCT_DELETE_BY_ID_QUERY = "DELETE FROM products WHERE product_id = $1"
+    GET_SUBSCRIBED_USERS_QUERY = "SELECT * FROM users_subs WHERE is_subs_active is true"
 
     def __init__(self, db_url):
         self.db_url = db_url
@@ -34,17 +36,29 @@ class MyAsyncDbClient:
         if self._check_connection():
             return await self.db_pool.fetch(self.PRODUCT_SELECT_QUERY, limit)
 
+    async def get_product_by_id(self, product_id: int) -> list:
+        """Получает продукт по id из таблицы products"""
+        product_id = int(product_id)
+        if self._check_connection():
+            return await self.db_pool.fetch(self.PRODUCT_BY_ID_SELECT_QUERY, product_id)
+
     async def insert_new_product(self, description: str, quantity: int, *args, **kwargs):
         """Создаёт новый продукт в таблице products"""
         self._check_connection()
         async with self.db_pool:
             await self.db_pool.execute(self.PRODUCT_INSERT_QUERY, description, quantity)
 
+    async def get_subscribed_users(self):
+        if self._check_connection():
+            return await self.db_pool.fetch(self.GET_SUBSCRIBED_USERS_QUERY)
+
     async def delete_product_by_id(self, product_id: int):
         """Удаляет продукт в таблице products"""
         self._check_connection()
+        product_id = int(product_id)
         async with self.db_pool:
-            await self.db_pool.execute(self.PRODUCT_DELETE_BY_ID_QUERY, product_id)
+            res = await self.db_pool.execute(self.PRODUCT_DELETE_BY_ID_QUERY, product_id)
+            return res
 
 
 async def tasker(db_client: MyAsyncDbClient):
