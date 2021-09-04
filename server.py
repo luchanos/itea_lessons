@@ -10,19 +10,24 @@
 from sanic import Sanic, Request
 from sanic.response import HTTPResponse, text  # text - тип ответа на запрос
 from datetime import datetime
-from functools import reduce
+
+from flow_14_07_2021.lesson_15.cw import MyAsyncDbClient, DB_URL
 
 app = Sanic("CRM_tech_app")
 
-app.config.DB_NAME = 'appdb'
-app.config['DB_USER'] = 'appuser'
+db_client = MyAsyncDbClient(DB_URL)
+app.db_client = db_client
+# app.before_server_start(app.db_client.setup())
 
-db_settings = {
-    'DB_HOST': 'localhost',
-    'DB_NAME': 'appdb2',
-    'DB_USER': 'appuser2'
-}
-app.config.update(db_settings)
+# app.config.DB_NAME = 'appdb'
+# app.config['DB_USER'] = 'appuser'
+#
+# db_settings = {
+#     'DB_HOST': 'localhost',
+#     'DB_NAME': 'appdb2',
+#     'DB_USER': 'appuser2'
+# }
+# app.config.update(db_settings)
 
 
 @app.get("/")
@@ -58,5 +63,18 @@ async def main_page(request: Request) -> HTTPResponse:
     return text("Домашняя страница")
 
 
+@app.get("/setup_resources")
+async def setup_resources(request):
+    await app.db_client.setup()
+
+
+@app.get("/get_products")
+async def get_products(request):
+    res = await app.db_client.get_products(1)
+    if not res:
+        return text("Not OK!")
+    return text("OK")
+
+
 # команда sanic server.app поднимает сервер саника
-app.run()
+# app.run()

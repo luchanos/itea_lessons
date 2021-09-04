@@ -42,6 +42,12 @@ async def fetch_content(url, session, main_id):
         write_image(data)
 
 
+# async def send_message():
+#     async with session.get(url, allow_redirects=True) as response:
+#     TOKEN = "1818338603:AAEv3AOttf2NqRSSphapItXr-ADv3sbL0tM"
+#     requests.get(f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={ADMIN_CHAT_ID}&text={log_msg}")
+
+
 def write_image(data):
     filename = 'file-{}.jpeg'.format(int(time() * 1000))
     with open(filename, 'wb') as file:
