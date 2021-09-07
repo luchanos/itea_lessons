@@ -2,6 +2,12 @@ import asyncio
 import aio_pika
 
 
+async def process_message(message: aio_pika.IncomingMessage):
+    await asyncio.sleep(10)
+    async with message.process():
+        print(message.body)
+
+
 class ConsumerAsync:
     def __init__(self, url, queue_name):
         self.url = url
@@ -12,27 +18,28 @@ class ConsumerAsync:
         self.connection = await aio_pika.connect_robust(self.url)
 
     async def consume(self):
-        async with self.connection:
-            # Creating channel
-            channel = await self.connection.channel()
+        # Creating channel
+        channel = await self.connection.channel()
 
-            # Declaring queue
-            queue = await channel.declare_queue(self.queue_name, auto_delete=False, durable=True)
+        # Declaring queue
+        queue = await channel.declare_queue(self.queue_name, auto_delete=False, durable=True)
 
-            async with queue.iterator() as queue_iter:
-                async for message in queue_iter:
-                    async with message.process():
-                        print(message.body)
-                        await asyncio.sleep(.2)
-                        if queue.name in message.body.decode():
-                            break
+        await queue.consume(process_message)
+
+    async def close(self):
+        await self.connection.close()
 
 
-async def main():
+async def main(loop):
     consumer = ConsumerAsync("amqp://rmquser:rmqpass@127.0.0.1/", "test_queue")
     await consumer.setup()
     await consumer.consume()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    loop = asyncio.get_event_loop()
+    connection = loop.run_until_complete(main(loop))
+    try:
+        loop.run_forever()
+    finally:
+        loop.run_until_complete(connection.close())
