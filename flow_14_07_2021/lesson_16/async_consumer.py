@@ -14,13 +14,13 @@ async def main(loop):
         channel = await connection.channel()
 
         # Declaring queue
-        queue = await channel.declare_queue(queue_name, auto_delete=True)
+        queue = await channel.declare_queue(queue_name, auto_delete=False, durable=True)
 
         async with queue.iterator() as queue_iter:
             async for message in queue_iter:
                 async with message.process():
                     print(message.body)
-
+                    await asyncio.sleep(.2)
                     if queue.name in message.body.decode():
                         break
 

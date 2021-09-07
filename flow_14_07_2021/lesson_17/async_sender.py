@@ -36,9 +36,10 @@ class SenderAsync:
 async def main():
     sender = SenderAsync("amqp://rmquser:rmqpass@127.0.0.1/")
     await sender.setup()
-    await sender.send(routing_key="test_queue", message="123")
-    await sender.send(routing_key="test_queue", message="123")
-    await sender.send(routing_key="test_queue", message="123")
+    for i in range(100_000_000):
+        await sender.send(routing_key="test_queue", message=str(i))
+    # await sender.send(routing_key="test_queue", message="123")
+    # await sender.send(routing_key="test_queue", message="123")
 
 
 if __name__ == "__main__":
