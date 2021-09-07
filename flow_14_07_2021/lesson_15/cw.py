@@ -1,10 +1,15 @@
 import asyncpg
 import asyncio
-from datetime import datetime
+from logging import getLogger, StreamHandler
+import sys
 
+logger = getLogger(__name__)
+
+stdout_handler = StreamHandler(sys.stdout)
+logger.addHandler(stdout_handler)
+logger.setLevel("DEBUG")
 
 DB_URL = 'postgresql://newuser:qwerty@127.0.0.1:5432/postgres'
-num = 0
 
 
 class MyAsyncDbClient:
@@ -19,20 +24,21 @@ class MyAsyncDbClient:
         self.db_pool = None
 
     async def setup(self):
-        print("Client had been set up!")
+        logger.info("Db client had been set up!")
         self.db_pool = await asyncpg.create_pool(DB_URL)
 
     def _check_connection(self):
         if not self.db_pool:
-            print("Pool has not been set up! Please, user client.setup method to create pool!")
+            logger.warning("Pool has not been set up! Please, user client.setup method to create pool!")
             return False
         return True
 
+    async def get_subcribed_users(self):
+        if self._check_connection():
+            return await self.db_pool.fetch(self.GET_SUBSCRIBED_USERS_QUERY)
+
     async def get_products(self, limit: int) -> list:
         """Получает заданное количество записей из таблица products"""
-        global num
-        num += 1
-        print(num)
         if self._check_connection():
             return await self.db_pool.fetch(self.PRODUCT_SELECT_QUERY, limit)
 
@@ -45,8 +51,7 @@ class MyAsyncDbClient:
     async def insert_new_product(self, description: str, quantity: int, *args, **kwargs):
         """Создаёт новый продукт в таблице products"""
         self._check_connection()
-        async with self.db_pool:
-            await self.db_pool.execute(self.PRODUCT_INSERT_QUERY, description, quantity)
+        await self.db_pool.execute(self.PRODUCT_INSERT_QUERY, description, quantity)
 
     async def get_subscribed_users(self):
         if self._check_connection():
@@ -56,9 +61,10 @@ class MyAsyncDbClient:
         """Удаляет продукт в таблице products"""
         self._check_connection()
         product_id = int(product_id)
-        async with self.db_pool:
-            res = await self.db_pool.execute(self.PRODUCT_DELETE_BY_ID_QUERY, product_id)
-            return res
+        return await self.db_pool.execute(self.PRODUCT_DELETE_BY_ID_QUERY, product_id)
+
+    async def close(self):
+        await self.db_pool.close()
 
 
 async def tasker(db_client: MyAsyncDbClient):
@@ -73,9 +79,3 @@ async def main():
     await db_client.setup()
     ls = [tasker(db_client), tasker(db_client)]
     await asyncio.gather(*ls)
-
-
-# start = datetime.now()
-# loop = asyncio.get_event_loop()
-# loop.run_until_complete(main())
-# print(datetime.now() - start)
