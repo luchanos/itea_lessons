@@ -146,5 +146,14 @@ async def force_users_notification(request):
     await users_notification(data_from_request["message"])
     return json({"success": True})
 
+
+@app.post("/create_notification_task")
+async def create_notification_task(request):
+    data_from_request = json_original.loads(request.body)
+    await app.db_client.create_notification_task(data_from_request["chat_id"],
+                                                 data_from_request["message"])
+    return json({"success": True})
+
+
 # команда sanic server.app поднимает сервер саника
 app.run()

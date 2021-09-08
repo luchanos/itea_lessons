@@ -1,9 +1,15 @@
 import asyncio
 import aio_pika
+from time import sleep
+
+from flow_14_07_2021.lesson_15.cw import MyAsyncDbClient, DB_URL
+
+db_client = MyAsyncDbClient(DB_URL)
+db_client.setup()
 
 
 async def process_message(message: aio_pika.IncomingMessage):
-    await asyncio.sleep(10)
+    await asyncio.sleep(.2)
     async with message.process():
         print(message.body)
 

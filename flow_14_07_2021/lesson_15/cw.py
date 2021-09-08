@@ -18,6 +18,10 @@ class MyAsyncDbClient:
     PRODUCT_INSERT_QUERY = "INSERT INTO products (description, quantity) VALUES ($1, $2)"
     PRODUCT_DELETE_BY_ID_QUERY = "DELETE FROM products WHERE product_id = $1"
     GET_SUBSCRIBED_USERS_QUERY = "SELECT * FROM users_subs WHERE is_subs_active is true"
+    NOTIFICATION_TASK_CREATE_QUERY = "INSERT INTO notification_tasks (chat_id, message) VALUES ($1, $2)"
+    NOTIFICATION_TASKS_SELECT_QUERY = "SELECT chat_id, message, notification_task_id " \
+                                      "FROM notification_tasks WHERE success is NULL"
+    MARK_NOTIFICATION_TASK_RESULT_QUERY = "UPDATE notification_tasks SET success = $1 WHERE notification_task_id = $2"
 
     def __init__(self, db_url):
         self.db_url = db_url
@@ -61,7 +65,19 @@ class MyAsyncDbClient:
         """Удаляет продукт в таблице products"""
         self._check_connection()
         product_id = int(product_id)
-        return await self.db_pool.execute(self.PRODUCT_DELETE_BY_ID_QUERY, product_id)
+        return await self.db_pool.fetch(self.PRODUCT_DELETE_BY_ID_QUERY, product_id)
+
+    async def create_notification_task(self, chat_id, message):
+        self._check_connection()
+        await self.db_pool.execute(self.NOTIFICATION_TASK_CREATE_QUERY, chat_id, message)
+
+    async def get_notification_tasks(self):
+        self._check_connection()
+        return await self.db_pool.fetch(self.NOTIFICATION_TASKS_SELECT_QUERY)
+
+    async def mark_notification_task_result(self, result, notification_task_id):
+        self._check_connection()
+        await self.db_pool.execute(self.MARK_NOTIFICATION_TASK_RESULT_QUERY, result, notification_task_id)
 
     async def close(self):
         await self.db_pool.close()
