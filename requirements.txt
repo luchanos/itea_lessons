@@ -4,4 +4,6 @@ psycopg2-binary==2.8.6
 yoyo-migrations==7.3.2
 mongoengine==0.23.1
 aiohttp==3.7.4.post0
-sanic
+aio-pika==6.8.0
+asyncpg==0.24.0
+sanic==21.6.2

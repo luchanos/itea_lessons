@@ -53,14 +53,14 @@ async def my_params(request, param_1):
 
 @app.get("/write_to_file")
 async def write_to_file(request):
-    with open("testfile.txt", "a") as f_o:
+    with open("opt/testfile.txt", "a") as f_o:
         f_o.write(str(datetime.now()) + "\n")
     return text("OK. I wrote it!")
 
 
 @app.get("/read_from_file")
 async def read_from_file(request):
-    with open("testfile.txt", "r") as f_o:
+    with open("opt/testfile.txt", "r") as f_o:
         lines = f_o.readlines()
     if len(lines) == 0:
         return text("The file is empty!")
@@ -69,7 +69,7 @@ async def read_from_file(request):
 
 @app.get("/clean_file")
 async def clean_file(request):
-    with open("testfile.txt", "w") as f_o:
+    with open("opt/testfile.txt", "w") as f_o:
         pass
     return text("File cleaned")
 
@@ -156,4 +156,4 @@ async def create_notification_task(request):
 
 
 # команда sanic server.app поднимает сервер саника
-app.run()
+# app.run()
