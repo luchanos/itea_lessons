@@ -1,37 +1,35 @@
-# brew services start mongodb-community@5.0
-# brew services stop mongodb-community@5.0
-
-from flask import Flask, request
-from datetime import datetime
 import mongoengine as me
+from flask import Flask, request, Response
+import json
 
-me.connect("USERS_DB")
+me.connect("USERS_DB_LESSON_18")
+my_app = Flask("my_shiny_app")
+
 
 user_profiles_list = [
     {"login": "lol",
      "password": "123",
      "about_me": "some lol",
-     "likes": 3},
+     "likes": 0},
     {"login": "kek",
      "password": "1234",
      "about_me": "some kek",
-     "likes": 5},
+     "likes": 0},
     {"login": "cheburek",
      "password": "12345",
      "about_me": "some cheburek",
-     "likes": 6},
+     "likes": 0},
     {"login": "some_user",
      "password": "1234567",
      "about_me": "some some_user",
      "likes": 0}
 ]
 
-
 user_data_list = [
     {"first_name": "Nikolai",
      "last_name": "Sviridov",
      "interests": ["mma", "programming", "blogging"],
-     "age": 29
+     "age": 30
      },
     {"first_name": "Anna",
      "last_name": "Prozorova",
@@ -60,7 +58,7 @@ class UserProfile(me.Document):
 
 
 class User(me.Document):
-    # объявляем поля коллекций
+    # объявляем поля коллекции
     first_name = me.StringField(min_length=1, max_length=100, required=True)
     last_name = me.StringField(min_length=1, max_length=100)
     interests = me.ListField()
@@ -71,31 +69,18 @@ class User(me.Document):
     # CASCADE - удалит юзера при удалении профайла
     # подробнее - https://docs.mongoengine.org/apireference.html
 
-    def say_hello(self):
-        return f"Hello, {self.first_name}"
-
     def __str__(self):
         return f"{self.first_name}, {self.last_name}, {self.interests}, {self.age}"
 
-    def save(self, *args, **kwargs):
-        self.created_at = datetime.now()
-        return super().save(*args, **kwargs)
-
-# http://127.0.0.1:5000/ping
-my_app = Flask("my_shiny_app")
-
-
-@my_app.route("/ping")
-def ping():
-    return f"OK {datetime.now()}"
+    def as_dict(self):
+        return {
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "interests": self.interests
+        }
 
 
-@my_app.route("/check_method", methods=["GET", "POST", "UPDATE", "DELETE", "PUT"])
-def check_method():
-    return f"{request.method}"
-
-
-@my_app.route("/crete_test_data", methods=["POST"])
+@my_app.route("/create_test_data", methods=["POST"])
 def create_test_data_in_mongo():
     for user_profile_data in zip(user_profiles_list, user_data_list):
         user_profile = UserProfile(**user_profile_data[0]).save()
@@ -110,11 +95,20 @@ def delete_all_data_in_test_db():
     return "OK"
 
 
-@my_app.route('/search_user_by_id/<string:user_id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@my_app.route("/delete_user_by_id/<string:user_id>", methods=["DELETE"])
+def delete_all_data_in_test_db(user_id):
+    User.objects(id=user_id).delete()
+    UserProfile.objects(user_id=user_id).delete()
+    return "OK"
+
+
+@my_app.route('/search_user_by_id/<string:user_id>', methods=['GET'])
 def search_user_by_id(user_id):
-    c = request
     res = User.objects(id=user_id)
-    return f"Результат: {res}"
+    res_list = []
+    for user in res:
+        res_list.append(user.as_dict())
+    return Response(status=200, response=json.dumps(res_list), content_type='application/json')
 
 
 if __name__ == "__main__":
