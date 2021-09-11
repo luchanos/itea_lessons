@@ -1,9 +1,12 @@
 import telebot
 import requests
 from datetime import datetime
+from envparse import Env
+
+env = Env()
 
 ADMIN_CHAT_ID = 362857450
-TOKEN = "1818338603:AAEv3AOttf2NqRSSphapItXr-ADv3sbL0tM"
+TOKEN = "1732311949:AAFothWVXVBFbwDuxa7ObGUIzlqcZkj7evs"
 
 bot = telebot.TeleBot(TOKEN)
 
