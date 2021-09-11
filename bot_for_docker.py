@@ -6,7 +6,7 @@ from envparse import Env
 env = Env()
 
 ADMIN_CHAT_ID = 362857450
-TOKEN = "1732311949:AAFothWVXVBFbwDuxa7ObGUIzlqcZkj7evs"
+TOKEN = env.str("TOKEN")
 
 bot = telebot.TeleBot(TOKEN)
 

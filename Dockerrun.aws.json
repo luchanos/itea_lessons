@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "luchanos/lesson_18_bot:1.0.0",
+    "Name": "luchanos/lesson_18_bot:1.0.2",
     "Update": "true"
   },
   "Ports": [
