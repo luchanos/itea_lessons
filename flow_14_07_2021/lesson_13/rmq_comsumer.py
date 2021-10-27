@@ -14,9 +14,9 @@ channel = connection.channel()
 
 print(' [*] Waiting for messages. To exit press CTRL+C')
 
-DB_URL = 'postgresql://postgres:dbpass@127.0.0.1:5432/postgres'
-my_db_client = MyDbClient(DB_URL)
-my_db_client.setup()
+# DB_URL = 'postgresql://postgres:dbpass@127.0.0.1:5432/postgres'
+# my_db_client = MyDbClient(DB_URL)
+# my_db_client.setup()
 
 
 # def create_product(ch, method, properties, body):

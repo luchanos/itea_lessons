@@ -34,6 +34,6 @@ for _ in range(10):
                               routing_key='test_queue',
                               body=f'{json.dumps(d)}'.encode())
         print(f" [x] Sent '{d}'")
-        # time.sleep(.5)
+        time.sleep(.5)
 
 connection.close()
